@@ -1,7 +1,17 @@
-CREATE DATABASE [SparePartsDB]
+--Delete DB
+EXEC msdb.dbo.sp_delete_database_backuphistory @database_name = N'SparePartsNewDB'
+GO
+USE [master]
+GO
+ALTER DATABASE [SparePartsNewDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+GO
+DROP DATABASE [SparePartsNewDB]
+GO
+--------------------
+CREATE DATABASE [SparePartsNewDB]
 GO
 
-USE [SparePartsDB]
+USE [SparePartsNewDB]
 GO
 
 CREATE TABLE [ProviderType](
@@ -20,78 +30,23 @@ GO
 
 CREATE TABLE [Provider](
 	[ID] int PRIMARY KEY IDENTITY,
+	[Name] varchar(50) UNIQUE NOT NULL,
 	[TypeID] tinyint NOT NULL REFERENCES [ProviderType] (ID)
 ) 
 GO
 
-CREATE FUNCTION get_type(@ID int) RETURNS varchar(20) AS
-BEGIN
-	RETURN (SELECT t.[Name]
-			FROM ProviderType t, [Provider] p
-			WHERE @ID = p.ID AND TypeID = t.ID)
-END
-GO
-
-CREATE TABLE [Firm](
-	[ID] int PRIMARY KEY REFERENCES [Provider] (ID) ON DELETE CASCADE,
-	[Name] varchar(50) UNIQUE NOT NULL,
-	--атрибуты
-	CONSTRAINT CK_Firm_Type CHECK (dbo.get_type(ID) = 'фирма')
-) 
-GO
-
-CREATE TABLE [Dealer](
-	[ID] int PRIMARY KEY REFERENCES [Provider] (ID) ON DELETE CASCADE,
-	[Name] varchar(50) UNIQUE NOT NULL,
-	--атрибуты
-	CONSTRAINT CK_Dealer_Type CHECK (dbo.get_type(ID) = 'дилер')
-) 
-GO
-
-CREATE TABLE [Manufacture](
-	[ID] int PRIMARY KEY REFERENCES [Provider] (ID) ON DELETE CASCADE,
-	[Name] varchar(50) UNIQUE NOT NULL,
-	--атрибуты
-	CONSTRAINT CK_Manufacture_Type CHECK (dbo.get_type(ID) = 'производство')
-) 
-GO
-
-CREATE TABLE [Minor](
-	[ID] int PRIMARY KEY REFERENCES [Provider] (ID) ON DELETE CASCADE,
-	[Name] varchar(50) UNIQUE NOT NULL,
-	--атрибуты
-	CONSTRAINT CK_Minor_Type CHECK (dbo.get_type(ID) = 'мелкий поставщик')
-) 
-GO
-
-CREATE TABLE [Shop](
-	[ID] int PRIMARY KEY REFERENCES [Provider] (ID) ON DELETE CASCADE,
-	[Name] varchar(50) UNIQUE NOT NULL,
-	--атрибуты
-	CONSTRAINT CK_Shop_Type CHECK (dbo.get_type(ID) = 'магазин')
-) 
-GO
-
-CREATE VIEW ProviderList AS
-	SELECT ID, [Name], 'Фирма' [Type]
-	FROM Firm
-	UNION ALL
-	SELECT ID, [Name], 'Дилер' [Type]
-	FROM Dealer
-	UNION ALL
-	SELECT ID, [Name], 'Производство' [Type]
-	FROM Manufacture
-	UNION ALL
-	SELECT ID, [Name], 'Мелкий поставщик' [Type]
-	FROM Minor
-	UNION ALL
-	SELECT ID, [Name], 'Магазин' [Type]
-	FROM Shop
-GO
-
 CREATE TABLE [Part](
 	[ID] int PRIMARY KEY IDENTITY,
-	[Name] varchar(50) NOT NULL
+	[Name] varchar(50) UNIQUE NOT NULL
+) 
+GO
+
+CREATE TABLE [PriceList](
+	[ID] int PRIMARY KEY IDENTITY,
+	[ProviderID] int NOT NULL REFERENCES [Provider] (ID),
+	[PartID] int NOT NULL REFERENCES [Part] (ID),
+	[Price] money NOT NULL,
+	[DeliveryIn] tinyint NOT NULL
 ) 
 GO
 
@@ -104,10 +59,16 @@ CREATE TABLE [Order](
 ) 
 GO
 
+CREATE TABLE [Buyer](
+	[ID] int PRIMARY KEY IDENTITY,
+	[Name] varchar(50) UNIQUE NOT NULL
+) 
+GO
+
 --заявки покупателей
 CREATE TABLE [Request](
 	[ID] int PRIMARY KEY IDENTITY,
-	[Buyer] varchar(50) NOT NULL,
+	[BuyerID] int NOT NULL REFERENCES Buyer (ID),
 	[PartID] int NOT NULL REFERENCES Part (ID),
 	[Quantity] int NOT NULL CONSTRAINT CK_Request_Quantity CHECK (Quantity > 0),
 	[Price] money NOT NULL CONSTRAINT CK_Request_Price CHECK (Price > 0)
@@ -116,7 +77,7 @@ GO
 
 CREATE TABLE [Sale](
 	[ID] int PRIMARY KEY IDENTITY,
-	[Buyer] varchar(50) NOT NULL,
+	[BuyerID] int NOT NULL REFERENCES Buyer (ID),
 	[PartID] int NOT NULL REFERENCES Part (ID),
 	[Quantity] int NOT NULL CONSTRAINT CK_Sale_Quantity CHECK (Quantity > 0),
 	[Price] money NOT NULL CONSTRAINT CK_Sale_Price CHECK (Price > 0),
@@ -125,11 +86,12 @@ CREATE TABLE [Sale](
 GO
 
 CREATE TABLE [Storage](
-	[ID] int PRIMARY KEY CONSTRAINT CK_Storage_ID CHECK (ID <= 10000), --макс количество ячеек
+	[ID] int PRIMARY KEY CONSTRAINT CK_Storage_ID_Max CHECK (ID <= 10000), --макс количество ячеек
 	[PartID] int NOT NULL REFERENCES Part (ID),
 	[Quantity] int NOT NULL CONSTRAINT CK_Storage_Quantity CHECK (Quantity > 0),
 	[Purchase Price] money NOT NULL CONSTRAINT CK_Storage_PurchasePrice CHECK ([Purchase Price] > 0),
-	[Date] date NOT NULL
+	[Date] date NOT NULL,
+	CONSTRAINT CK_Storage_ID_Min CHECK (ID > 0) --нумерация ячеек начинается с 1
 ) 
 GO
 
@@ -158,34 +120,37 @@ GO
 /* 1 */
 
 --фирмы, поставляющие двигатели
-SELECT f.[Name]
-FROM Firm f, Delivery d, Part p
-WHERE f.ID = d.ProviderID AND d.PartID = p.ID AND p.[Name] = 'двигатель'
+SELECT pr.[Name]
+FROM [Provider] pr JOIN ProviderType t ON pr.TypeID = t.ID, Delivery d, Part p
+WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'фирма' AND p.[Name] = 'двигатель'
 
 --магазины, поставившие не менее 100 шин за апрель 2021
-SELECT s.[Name], SUM(Quantity) Quantity
-FROM Shop s, Delivery d, Part p
-WHERE s.ID = d.ProviderID AND d.PartID = p.ID AND p.[Name] = 'шина' AND [Date] BETWEEN '20210401' AND '20210430'
-GROUP BY s.[Name]
+SELECT pr.[Name], SUM(Quantity) Quantity
+FROM [Provider] pr JOIN ProviderType t ON pr.TypeID = t.ID, Delivery d, Part p
+WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'магазин' AND p.[Name] = 'шина' 
+	  AND [Date] BETWEEN '20210401' AND '20210430'
+GROUP BY pr.[Name]
 HAVING SUM(Quantity) > 100
 
 /* 2 */
 
-SELECT pl.[Name], pl.[Type], Price, [Date]
-FROM Part p, Delivery d, ProviderList pl
-WHERE pl.ID = d.ProviderID AND d.PartID = p.ID AND p.[Name] = 'двигатель'
+SELECT pr.[Name], t.[Name] [Type], Price, DeliveryIn
+FROM PriceList pl JOIN Part p ON pl.PartID = p.ID
+				  JOIN [Provider] pr ON pr.ID = pl.ProviderID
+				  JOIN ProviderType t ON pr.TypeID = t.ID
+WHERE p.[Name] = 'двигатель'
 
 /* 3 */
 
 --фары за неделю
-SELECT Buyer, Quantity
-FROM Sale s, Part p
-WHERE s.PartID = p.ID AND [Date] BETWEEN '20210419' AND '20210425' AND p.[Name] = 'фара'
+SELECT b.[Name], Quantity
+FROM Sale s, Part p, Buyer b
+WHERE s.PartID = p.ID AND s.BuyerID = b.ID AND [Date] BETWEEN '20210419' AND '20210425' AND p.[Name] = 'фара'
 
 --товары в объёме >= 1000
-SELECT Buyer, [Name] Part, Quantity
-FROM Sale s, Part p
-WHERE s.PartID = p.ID AND Quantity >= 1000
+SELECT b.[Name], p.[Name] Part, Quantity
+FROM Sale s, Part p, Buyer b
+WHERE s.PartID = p.ID AND s.BuyerID = b.ID AND Quantity >= 1000
 
 /* 4 */
 
@@ -195,14 +160,14 @@ WHERE s.PartID = p.ID
 
 /* 5 */
 
-SELECT TOP(10)p.[Name] Part, SUM(Quantity) Quantity, [Best Purchase Price], pl.[Name] [Cheapest Provider]
-FROM ProviderList pl, Part p, Sale s JOIN (SELECT PartID, MIN(Price) [Best Purchase Price]
-										   FROM Delivery
-										   GROUP BY PartID) s1 ON s.PartID = s1.PartID
-									 JOIN (SELECT PartID, Price, ProviderID
-										   FROM Delivery) s2 ON [Best Purchase Price] = s2.Price
-WHERE s.PartID = p.ID AND s2.ProviderID = pl.ID AND s.PartID = s2.PartID
-GROUP BY p.[Name], [Best Purchase Price], pl.[Name]
+SELECT TOP(10)p.[Name] Part, SUM(Quantity) Quantity, [Best Purchase Price], pr.[Name] [Cheapest Provider]
+FROM [Provider] pr, Part p, Sale s JOIN (SELECT PartID, MIN(Price) [Best Purchase Price]
+										 FROM Delivery
+										 GROUP BY PartID) s1 ON s.PartID = s1.PartID
+								   JOIN (SELECT PartID, Price, ProviderID
+										 FROM Delivery) s2 ON [Best Purchase Price] = s2.Price
+WHERE s.PartID = p.ID AND s2.ProviderID = pr.ID AND s.PartID = s2.PartID
+GROUP BY p.[Name], [Best Purchase Price], pr.[Name]
 ORDER BY Quantity DESC
 
 /* 6 */
@@ -211,12 +176,12 @@ SELECT AVG(Quantity) Average
 FROM Sale s, Part p
 WHERE s.PartID = p.ID AND [Date] BETWEEN '20210401' AND '20210430' AND p.[Name] = 'фара'
 
-/* 7 */
+/* 7 */--фикс случая @a == NULL 
 
 --доля по объёмам продаж (деньги)
 DECLARE @a real = (SELECT SUM(Price * Quantity) 
-				   FROM Delivery, ProviderList pl
-				   WHERE ProviderID = pl.ID AND pl.[Name] = 'дилер')
+				   FROM Delivery, [Provider] pr
+				   WHERE ProviderID = pr.ID AND pr.[Name] = 'дилер')
 DECLARE @b real = (SELECT SUM(Price * Quantity)
 				   FROM Delivery)
 SELECT CONCAT(@a/@b*100, '%') [Value market share]
@@ -224,8 +189,8 @@ GO
 
 --доля по штучным продажам (единицы товара)
 DECLARE @a real = (SELECT SUM(Quantity) 
-				   FROM Delivery, ProviderList pl
-				   WHERE ProviderID = pl.ID AND pl.[Name] = 'дилер')
+				   FROM Delivery, [Provider] pr
+				   WHERE ProviderID = pr.ID AND pr.[Name] = 'дилер')
 DECLARE @b real = (SELECT SUM(Quantity)
 				   FROM Delivery)
 SELECT CONCAT(@a/@b*100, '%') [Volume market share]
@@ -267,10 +232,10 @@ WHERE s1.PartID = p.ID AND s2.PartID = p.ID
 /* 10 */
 
 SELECT CASE WHEN p.[Name] IS NULL THEN 'Total' ELSE p.[Name] END Part, SUM(Quantity) Quantity,
-	   CASE WHEN pl.[Name] IS NULL THEN 'Total' ELSE pl.[Name] END [Provider]
-FROM Part p, Defect d, ProviderList pl
-WHERE PartID = p.ID AND ProviderID = pl.ID AND [Date] BETWEEN '20210401' AND '20210430'
-GROUP BY ROLLUP(p.[Name], pl.[Name])
+	   CASE WHEN pr.[Name] IS NULL THEN 'Total' ELSE pr.[Name] END [Provider]
+FROM Part p, Defect d, [Provider] pr
+WHERE PartID = p.ID AND ProviderID = pr.ID AND [Date] BETWEEN '20210401' AND '20210430'
+GROUP BY ROLLUP(p.[Name], pr.[Name])
 
 /* 11 */
 
@@ -281,15 +246,16 @@ GROUP BY [Name]
 
 /* 12 */
 
+--приход и расход указаны относительно количества деталей на складе
 DECLARE @d1 date = '20210401'
 DECLARE @d2 date = '20210430'
-SELECT 'Приход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], pl.[Name] Trader
-FROM Delivery, Part p, ProviderList pl
-WHERE PartID = p.ID AND ProviderID = pl.ID AND [Date] BETWEEN @d1 AND @d2
+SELECT 'Приход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], pr.[Name] Trader
+FROM Delivery, Part p, [Provider] pr
+WHERE PartID = p.ID AND ProviderID = pr.ID AND [Date] BETWEEN @d1 AND @d2
 UNION ALL
-SELECT 'Расход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], Buyer
-FROM Sale, Part p
-WHERE PartID = p.ID AND [Date] BETWEEN @d1 AND @d2
+SELECT 'Расход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], b.[Name]
+FROM Sale, Part p, Buyer b
+WHERE PartID = p.ID AND BuyerID = b.ID AND [Date] BETWEEN @d1 AND @d2
 ORDER BY [Date]
 GO
 
@@ -339,23 +305,23 @@ GO
 
 DECLARE @a varchar(30) = (SELECT [definition]
 						  FROM sys.check_constraints
-						  WHERE [name] = 'CK_Storage_ID')
+						  WHERE [name] = 'CK_Storage_ID_Max')
 DECLARE @i int = PATINDEX('%[0123456789]%', @a)
 DECLARE @b varchar(30) = SUBSTRING(@a, @i, 25)
 SET @i = PATINDEX('%[^0123456789]%', @b)
 IF @i > 0 
 	SET @b = LEFT(@b, @i-1)
 SET @i = CAST(@b AS int)
-SELECT @i - COUNT(ID) [Empty cells]
+SELECT @i - COUNT(*) [Empty cells]
 FROM Storage
 GO
 
 /* 16 */
 
 --перечень
-SELECT Buyer, [Name] Part, Quantity, Price, Quantity * Price [Value]
-FROM Request, Part p
-WHERE PartID = p.ID
+SELECT b.[Name], p.[Name] Part, Quantity, Price, Quantity * Price [Value]
+FROM Request, Part p, Buyer b
+WHERE PartID = p.ID AND BuyerID = b.ID
 
 --общая сумма
 SELECT SUM(Quantity * Price) Total
