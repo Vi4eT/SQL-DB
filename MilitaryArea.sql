@@ -174,11 +174,11 @@ WHERE CommanderID = p.ID
 --1.2 army
 SELECT u.[Name], Surname + ' ' + p.[Name] + ' ' + Patronymic Commander
 FROM Unit u, Personnel p, Army a, Formation f
-WHERE u.CommanderID = p.ID AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'первая'
+WHERE u.CommanderID = p.ID AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'РїРµСЂРІР°СЏ'
 --1.3 formation
 SELECT u.[Name], Surname + ' ' + p.[Name] + ' ' + Patronymic Commander
 FROM Unit u, Personnel p, Formation f
-WHERE u.CommanderID = p.ID AND u.FormationID = f.ID AND f.[Name] = 'дивизия'
+WHERE u.CommanderID = p.ID AND u.FormationID = f.ID AND f.[Name] = 'РґРёРІРёР·РёСЏ'
 
 /* --- 2 --- */
 --2.1 all
@@ -188,19 +188,19 @@ WHERE RankID = r.ID AND IsOfficer = 1
 --2.2 defined rank, military area
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r
-WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'генерал'
+WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'РіРµРЅРµСЂР°Р»'
 --2.3 defined rank, army
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Army a
-WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'полковник' AND ArmyID = a.ID AND a.[Name] = 'третья'
+WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'РїРѕР»РєРѕРІРЅРёРє' AND ArmyID = a.ID AND a.[Name] = 'С‚СЂРµС‚СЊСЏ'
 --2.4 defined rank, formation
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Formation f
-WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'генерал' AND FormationID = f.ID AND f.[Name] = 'корпус'
+WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'РіРµРЅРµСЂР°Р»' AND FormationID = f.ID AND f.[Name] = 'РєРѕСЂРїСѓСЃ'
 --2.5 defined rank, unit
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Unit u
-WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'полковник' AND UnitID = u.ID AND u.[Name] = 'часть 1'
+WHERE RankID = r.ID AND IsOfficer = 1 AND r.[Name] = 'РїРѕР»РєРѕРІРЅРёРє' AND UnitID = u.ID AND u.[Name] = 'С‡Р°СЃС‚СЊ 1'
 
 /* --- 3 --- */
 --3.1 all
@@ -210,25 +210,25 @@ WHERE RankID = r.ID AND IsOfficer = 0
 --3.2 defined rank, military area
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r
-WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'сержант'
+WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'СЃРµСЂР¶Р°РЅС‚'
 --3.3 defined rank, army
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Army a
-WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'сержант' AND ArmyID = a.ID AND a.[Name] = 'первая'
+WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'СЃРµСЂР¶Р°РЅС‚' AND ArmyID = a.ID AND a.[Name] = 'РїРµСЂРІР°СЏ'
 --3.4 defined rank, formation
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Formation f
-WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'рядовой' AND FormationID = f.ID AND f.[Name] = 'дивизия'
+WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'СЂСЏРґРѕРІРѕР№' AND FormationID = f.ID AND f.[Name] = 'РґРёРІРёР·РёСЏ'
 --3.5 defined rank, unit
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, Unit u
-WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'сержант' AND UnitID = u.ID AND u.[Name] = 'часть 1'
+WHERE RankID = r.ID AND IsOfficer = 0 AND r.[Name] = 'СЃРµСЂР¶Р°РЅС‚' AND UnitID = u.ID AND u.[Name] = 'С‡Р°СЃС‚СЊ 1'
 
 /* --- 4 --- */
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic [Name], r.[Name] [Rank]
 FROM Personnel p, [Rank] r, (SELECT Rating, UnitID
 							 FROM Personnel p, [Rank] r 
-							 WHERE r.ID = RankID AND Surname + ' ' + p.[Name] + ' ' + Patronymic = 'иванов иван иванович') sub
+							 WHERE r.ID = RankID AND Surname + ' ' + p.[Name] + ' ' + Patronymic = 'РёРІР°РЅРѕРІ РёРІР°РЅ РёРІР°РЅРѕРІРёС‡') sub
 WHERE r.ID = RankID AND r.Rating > sub.Rating AND p.UnitID = sub.UnitID
 ORDER BY r.Rating, Surname, p.[Name], Patronymic
 
@@ -239,15 +239,15 @@ FROM Unit
 --5.2 army
 SELECT u.[Name], Dislocation
 FROM Unit u, Army a, Formation f
-WHERE u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'третья'
+WHERE u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'С‚СЂРµС‚СЊСЏ'
 --5.3 formation
 SELECT u.[Name], Dislocation
 FROM Unit u, Formation f
-WHERE u.FormationID = f.ID AND f.[Name] = 'корпус'
+WHERE u.FormationID = f.ID AND f.[Name] = 'РєРѕСЂРїСѓСЃ'
 --5.4 unit
 SELECT [Name], Dislocation
 FROM Unit
-WHERE [Name] = 'часть 1'
+WHERE [Name] = 'С‡Р°СЃС‚СЊ 1'
 
 /* --- 6 --- */
 --6.1 all
@@ -257,25 +257,25 @@ WHERE u.ID = UnitID
 --6.2 defined model, military area
 SELECT Model, Quantity, [Name] Unit, Additional
 FROM Vehicle, Unit u
-WHERE u.ID = UnitID AND Model = 'Т-90'
+WHERE u.ID = UnitID AND Model = 'Рў-90'
 --6.3 defined model, army
 SELECT Model, Quantity, u.[Name] Unit, Additional
 FROM Vehicle, Unit u, Army a, Formation f
-WHERE u.ID = UnitID AND Model = 'Т-90' AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'первая'
+WHERE u.ID = UnitID AND Model = 'Рў-90' AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'РїРµСЂРІР°СЏ'
 --6.4 defined model, formation
 SELECT Model, Quantity, u.[Name] Unit, Additional
 FROM Vehicle, Unit u, Formation f
-WHERE u.ID = UnitID AND Model = 'Т-90' AND u.FormationID = f.ID AND f.[Name] = 'дивизия'
+WHERE u.ID = UnitID AND Model = 'Рў-90' AND u.FormationID = f.ID AND f.[Name] = 'РґРёРІРёР·РёСЏ'
 --6.5 all, unit
 SELECT Model, Quantity, [Name] Unit, Additional
 FROM Vehicle, Unit u
-WHERE u.ID = UnitID AND u.[Name] = 'часть 1'
+WHERE u.ID = UnitID AND u.[Name] = 'С‡Р°СЃС‚СЊ 1'
 
 /* --- 7 --- */
 --7.1 unit
 SELECT [Name] Unit, b.ID Building, IsResidential
 FROM Building b, Unit u
-WHERE u.ID = UnitID AND [Name] = 'часть 1'
+WHERE u.ID = UnitID AND [Name] = 'С‡Р°СЃС‚СЊ 1'
 --7.2 >1 company
 SELECT b.ID Building, COUNT(BuildingID) Companies
 FROM Building b JOIN Company c ON BuildingID = b.ID
@@ -294,14 +294,14 @@ WHERE u.ID = b.UnitID AND b.ID = BuildingID
 --8.1 quantity > 5
 SELECT [Name] Unit, Model, Quantity, Additional
 FROM Unit u, Vehicle
-WHERE u.ID = UnitID AND Quantity > 5 AND Model = 'т-90'
+WHERE u.ID = UnitID AND Quantity > 5 AND Model = 'С‚-90'
 --8.2 no such model
 SELECT [Name] Unit
 FROM Unit u
 EXCEPT
 SELECT [Name] Unit
 FROM Unit u, Vehicle
-WHERE u.ID = UnitID AND Model = 'т-90'
+WHERE u.ID = UnitID AND Model = 'С‚-90'
 
 /* --- 9 --- */
 --9.1 all
@@ -311,19 +311,19 @@ WHERE u.ID = UnitID
 --9.2 defined type, military area
 SELECT [Type], Quantity, [Name] Unit, Additional
 FROM Weaponry, Unit u
-WHERE u.ID = UnitID AND [Type] = 'пм'
+WHERE u.ID = UnitID AND [Type] = 'РїРј'
 --9.3 defined type, army
 SELECT [Type], Quantity, u.[Name] Unit, Additional
 FROM Weaponry, Unit u, Army a, Formation f
-WHERE u.ID = UnitID AND [Type] = 'пм' AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'третья'
+WHERE u.ID = UnitID AND [Type] = 'РїРј' AND u.FormationID = f.ID AND f.ArmyID = a.ID AND a.[Name] = 'С‚СЂРµС‚СЊСЏ'
 --9.4 defined type, formation
 SELECT [Type], Quantity, u.[Name] Unit, Additional
 FROM Weaponry, Unit u, Formation f
-WHERE u.ID = UnitID AND [Type] = 'пм' AND u.FormationID = f.ID AND f.[Name] = 'корпус'
+WHERE u.ID = UnitID AND [Type] = 'РїРј' AND u.FormationID = f.ID AND f.[Name] = 'РєРѕСЂРїСѓСЃ'
 --9.5 all, unit
 SELECT [Type], Quantity, [Name] Unit, Additional
 FROM Weaponry, Unit u
-WHERE u.ID = UnitID AND u.[Name] = 'часть 88463'
+WHERE u.ID = UnitID AND u.[Name] = 'С‡Р°СЃС‚СЊ 88463'
 
 /* --- 10 --- */
 --10.1 all
@@ -334,19 +334,19 @@ HAVING COUNT(SpecialityID) > 5
 --10.2 army
 SELECT s.[Name], COUNT(SpecialityID) Specialists
 FROM Personnel p JOIN Speciality s ON SpecialityID = s.ID, Army a
-WHERE p.ArmyID = a.ID AND a.[Name] = 'пятая'
+WHERE p.ArmyID = a.ID AND a.[Name] = 'РїСЏС‚Р°СЏ'
 GROUP BY s.[Name]
 HAVING COUNT(SpecialityID) > 1
 --10.3 formation
 SELECT s.[Name], COUNT(SpecialityID) Specialists
 FROM Personnel p JOIN Speciality s ON SpecialityID = s.ID, Formation f
-WHERE p.FormationID = f.ID AND f.[Name] = 'дивизия'
+WHERE p.FormationID = f.ID AND f.[Name] = 'РґРёРІРёР·РёСЏ'
 GROUP BY s.[Name]
 HAVING COUNT(SpecialityID) > 1
 --10.4 unit
 SELECT s.[Name], COUNT(SpecialityID) Specialists
 FROM Personnel p JOIN Speciality s ON SpecialityID = s.ID, Unit u
-WHERE p.UnitID = u.ID AND u.[Name] = 'часть 23248'
+WHERE p.UnitID = u.ID AND u.[Name] = 'С‡Р°СЃС‚СЊ 23248'
 GROUP BY s.[Name]
 HAVING COUNT(SpecialityID) > 1
 
@@ -354,36 +354,36 @@ HAVING COUNT(SpecialityID) > 1
 --11.1 all
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic Soldier, s.[Name]
 FROM Personnel p, Speciality s
-WHERE SpecialityID = s.ID AND s.[Name] = 'водитель'
+WHERE SpecialityID = s.ID AND s.[Name] = 'РІРѕРґРёС‚РµР»СЊ'
 --11.2 army
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic Soldier, s.[Name]
 FROM Personnel p, Speciality s, Army a
-WHERE SpecialityID = s.ID AND s.[Name] = 'водитель' AND p.ArmyID = a.ID AND a.[Name] = 'пятая'
+WHERE SpecialityID = s.ID AND s.[Name] = 'РІРѕРґРёС‚РµР»СЊ' AND p.ArmyID = a.ID AND a.[Name] = 'РїСЏС‚Р°СЏ'
 --11.3 formation
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic Soldier, s.[Name]
 FROM Personnel p, Speciality s, Formation f
-WHERE SpecialityID = s.ID AND s.[Name] = 'водитель' AND p.FormationID = f.ID AND f.[Name] = 'корпус'
+WHERE SpecialityID = s.ID AND s.[Name] = 'РІРѕРґРёС‚РµР»СЊ' AND p.FormationID = f.ID AND f.[Name] = 'РєРѕСЂРїСѓСЃ'
 --11.4 unit
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic Soldier, s.[Name]
 FROM Personnel p, Speciality s, Unit u
-WHERE SpecialityID = s.ID AND s.[Name] = 'водитель' AND p.UnitID = u.ID AND u.[Name] = 'часть 23248'
+WHERE SpecialityID = s.ID AND s.[Name] = 'РІРѕРґРёС‚РµР»СЊ' AND p.UnitID = u.ID AND u.[Name] = 'С‡Р°СЃС‚СЊ 23248'
 --11.5 company (or fewer)
 SELECT Surname + ' ' + p.[Name] + ' ' + Patronymic Soldier, s.[Name]
 FROM Personnel p, Speciality s, Company c
-WHERE SpecialityID = s.ID AND s.[Name] = 'водитель' AND p.CompanyID = c.ID AND c.[Name] = '9 рота'
+WHERE SpecialityID = s.ID AND s.[Name] = 'РІРѕРґРёС‚РµР»СЊ' AND p.CompanyID = c.ID AND c.[Name] = '9 СЂРѕС‚Р°'
 
 /* --- 12 --- */
 --12.1 quantity > 10
 SELECT [Name] Unit, [Type], Quantity, Additional
 FROM Unit u, Weaponry
-WHERE u.ID = UnitID AND Quantity > 10 AND [Type] = 'пм'
+WHERE u.ID = UnitID AND Quantity > 10 AND [Type] = 'РїРј'
 --12.2 no such type
 SELECT [Name] Unit
 FROM Unit u
 EXCEPT
 SELECT [Name] Unit
 FROM Unit u, Weaponry
-WHERE u.ID = UnitID AND [Type] = 'акс-74ун'
+WHERE u.ID = UnitID AND [Type] = 'Р°РєСЃ-74СѓРЅ'
 
 /* --- 13 --- */
 --13.1 army, max

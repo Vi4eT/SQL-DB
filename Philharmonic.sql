@@ -24,12 +24,12 @@ CREATE TABLE BuildingType
 GO
 
 INSERT INTO BuildingType ([Name]) VALUES
-	('Êîíöåðòíûé çàë'), 
-	('Òåàòð'),
-	('Êîíöåðòíàÿ ïëîùàäêà'),
-	('Ýñòðàäà'),
-	('Äâîðåö êóëüòóðû'),
-	('Êèíîòåàòð') --íå ìîæåò âûñòóïàòü àðòèñò, íåò èìïðåñàðèî, òîëüêî îðãàíèçàòîð
+	('ÐšÐ¾Ð½Ñ†ÐµÑ€Ñ‚Ð½Ñ‹Ð¹ Ð·Ð°Ð»'), 
+	('Ð¢ÐµÐ°Ñ‚Ñ€'),
+	('ÐšÐ¾Ð½Ñ†ÐµÑ€Ñ‚Ð½Ð°Ñ Ð¿Ð»Ð¾Ñ‰Ð°Ð´ÐºÐ°'),
+	('Ð­ÑÑ‚Ñ€Ð°Ð´Ð°'),
+	('Ð”Ð²Ð¾Ñ€ÐµÑ† ÐºÑƒÐ»ÑŒÑ‚ÑƒÑ€Ñ‹'),
+	('ÐšÐ¸Ð½Ð¾Ñ‚ÐµÐ°Ñ‚Ñ€') --Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ð²Ñ‹ÑÑ‚ÑƒÐ¿Ð°Ñ‚ÑŒ Ð°Ñ€Ñ‚Ð¸ÑÑ‚, Ð½ÐµÑ‚ Ð¸Ð¼Ð¿Ñ€ÐµÑÐ°Ñ€Ð¸Ð¾, Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ‚Ð¾Ñ€
 GO
 
 CREATE TABLE ParameterType
@@ -40,10 +40,10 @@ CREATE TABLE ParameterType
 GO
 
 INSERT INTO ParameterType ([Name]) VALUES
-	('Âìåñòèìîñòü'), 
-	('Âûñîòà ñöåíû'),
-	('Øèðèíà ñöåíû'),
-	('Ïëîùàäü')
+	('Ð’Ð¼ÐµÑÑ‚Ð¸Ð¼Ð¾ÑÑ‚ÑŒ'), 
+	('Ð’Ñ‹ÑÐ¾Ñ‚Ð° ÑÑ†ÐµÐ½Ñ‹'),
+	('Ð¨Ð¸Ñ€Ð¸Ð½Ð° ÑÑ†ÐµÐ½Ñ‹'),
+	('ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ')
 GO
 
 CREATE TABLE Building
@@ -79,11 +79,11 @@ CREATE TABLE Genre
 GO
 
 INSERT INTO Genre ([Name]) VALUES
-	('Òåàòð'), 
-	('Êèíî'),
-	('Öèðê'),
-	('Ìþçèêë'),
-	('Âîêàë')
+	('Ð¢ÐµÐ°Ñ‚Ñ€'), 
+	('ÐšÐ¸Ð½Ð¾'),
+	('Ð¦Ð¸Ñ€Ðº'),
+	('ÐœÑŽÐ·Ð¸ÐºÐ»'),
+	('Ð’Ð¾ÐºÐ°Ð»')
 GO
 
 CREATE TABLE Organizer
@@ -97,7 +97,7 @@ CREATE TABLE [Event]
 (
 	[ID] int PRIMARY KEY IDENTITY,
 	[Name] varchar(50) NOT NULL,
-	[Type] varchar(10) NOT NULL CONSTRAINT CK_Event_Type CHECK ([Type] IN ('Êîíöåðò', 'Êîíêóðñ')),
+	[Type] varchar(10) NOT NULL CONSTRAINT CK_Event_Type CHECK ([Type] IN ('ÐšÐ¾Ð½Ñ†ÐµÑ€Ñ‚', 'ÐšÐ¾Ð½ÐºÑƒÑ€Ñ')),
 	[BuildingID] int NOT NULL REFERENCES Building (ID),
 	[OrganizerID] int NOT NULL REFERENCES Organizer (ID),
 	[StartDate] date NOT NULL,
@@ -136,7 +136,7 @@ CREATE FUNCTION iscontest(@ID int) RETURNS bit AS
 BEGIN
 	IF (SELECT [Type]
 		FROM [Event]
-		WHERE @ID = ID) LIKE 'êîíêóðñ'
+		WHERE @ID = ID) LIKE 'ÐºÐ¾Ð½ÐºÑƒÑ€Ñ'
 		RETURN 1
 	RETURN 0
 END
@@ -156,28 +156,28 @@ GO
 
 --Queries
 --1
---òèï
+--Ñ‚Ð¸Ð¿
 SELECT b.[Name]
 FROM Building b JOIN BuildingType bt ON b.TypeID = bt.ID
-WHERE bt.[Name] = 'òåàòð'
---òèï è ïàðàìåòð
+WHERE bt.[Name] = 'Ñ‚ÐµÐ°Ñ‚Ñ€'
+--Ñ‚Ð¸Ð¿ Ð¸ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€
 SELECT b.[Name], [Value]
 FROM Building b JOIN BuildingType bt ON b.TypeID = bt.ID
 				JOIN BuildingParameter bp ON b.ID = bp.BuildingID
 				JOIN ParameterType pt ON bp.TypeID = pt.ID
-WHERE bt.[Name] = 'òåàòð' AND pt.[Name] = 'âìåñòèìîñòü' AND [Value] >= 1000
+WHERE bt.[Name] = 'Ñ‚ÐµÐ°Ñ‚Ñ€' AND pt.[Name] = 'Ð²Ð¼ÐµÑÑ‚Ð¸Ð¼Ð¾ÑÑ‚ÑŒ' AND [Value] >= 1000
 
 --2
 SELECT FIO
 FROM EmployeeGenre eg JOIN Employee e ON eg.EmployeeID = e.ID
 					  JOIN Genre g ON eg.GenreID = g.ID
-WHERE [Name] = 'ìþçèêë'
+WHERE [Name] = 'Ð¼ÑŽÐ·Ð¸ÐºÐ»'
 
 --3
 SELECT e.FIO
 FROM ArtistImpresario ai JOIN Employee e ON ai.ArtistID = e.ID
 						 JOIN Employee ee ON ai.ImpresarioID = ee.ID
-WHERE ee.FIO = 'Áëèíîâ Åãîð Àëåêñàíäðîâè÷'
+WHERE ee.FIO = 'Ð‘Ð»Ð¸Ð½Ð¾Ð² Ð•Ð³Ð¾Ñ€ ÐÐ»ÐµÐºÑÐ°Ð½Ð´Ñ€Ð¾Ð²Ð¸Ñ‡'
 
 --4
 SELECT e.FIO, g.[Name] Genre
@@ -192,37 +192,37 @@ WHERE EmployeeID IN (SELECT EmployeeID
 SELECT e.FIO
 FROM ArtistImpresario ai JOIN Employee ee ON ai.ArtistID = ee.ID
 						 JOIN Employee e ON ai.ImpresarioID = e.ID
-WHERE ee.FIO = 'Ôîìèí Âàëåðèé Êîíñòàíòèíîâè÷'
+WHERE ee.FIO = 'Ð¤Ð¾Ð¼Ð¸Ð½ Ð’Ð°Ð»ÐµÑ€Ð¸Ð¹ ÐšÐ¾Ð½ÑÑ‚Ð°Ð½Ñ‚Ð¸Ð½Ð¾Ð²Ð¸Ñ‡'
 
 --6
---âñå
+--Ð²ÑÐµ
 SELECT e.[Name], b.[Name] Place, o.[Name] Organizer, StartDate, EndDate
 FROM [Event] e JOIN Building b ON e.BuildingID = b.ID
 			   JOIN Organizer o ON e.OrganizerID = o.ID
-WHERE [Type] = 'êîíöåðò' AND StartDate >= '20210701' AND EndDate <= '20220101'
---îðãàíèçàòîð
+WHERE [Type] = 'ÐºÐ¾Ð½Ñ†ÐµÑ€Ñ‚' AND StartDate >= '20210701' AND EndDate <= '20220101'
+--Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ‚Ð¾Ñ€
 SELECT e.[Name], b.[Name] Place, StartDate, EndDate
 FROM [Event] e JOIN Building b ON e.BuildingID = b.ID
 			   JOIN Organizer o ON e.OrganizerID = o.ID
-WHERE [Type] = 'êîíöåðò' AND StartDate >= '20210701' AND EndDate <= '20220101' AND o.[Name] = 'ÎÎÎ Àêðîïîëü'
+WHERE [Type] = 'ÐºÐ¾Ð½Ñ†ÐµÑ€Ñ‚' AND StartDate >= '20210701' AND EndDate <= '20220101' AND o.[Name] = 'ÐžÐžÐž ÐÐºÑ€Ð¾Ð¿Ð¾Ð»ÑŒ'
 
 --7
 SELECT FIO
 FROM ContestArtist ca JOIN [Event] e ON ca.ContestID = e.ID
 					  JOIN Employee em ON ca.ArtistID = em.ID
-WHERE [Name] = 'Êîíêóðñ òåàòðàëüíûõ ïîñòàíîâîê "Ìàñêàðàä"' AND IsWinner = 1
+WHERE [Name] = 'ÐšÐ¾Ð½ÐºÑƒÑ€Ñ Ñ‚ÐµÐ°Ñ‚Ñ€Ð°Ð»ÑŒÐ½Ñ‹Ñ… Ð¿Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¾Ðº "ÐœÐ°ÑÐºÐ°Ñ€Ð°Ð´"' AND IsWinner = 1
 
 --8
 SELECT e.[Name], o.[Name] Organizer, StartDate, EndDate
 FROM [Event] e JOIN Building b ON e.BuildingID = b.ID
 			   JOIN Organizer o ON e.OrganizerID = o.ID
-WHERE [Type] = 'êîíöåðò' AND b.[Name] = 'Ìàðèèíñêèé òåàòð'
+WHERE [Type] = 'ÐºÐ¾Ð½Ñ†ÐµÑ€Ñ‚' AND b.[Name] = 'ÐœÐ°Ñ€Ð¸Ð¸Ð½ÑÐºÐ¸Ð¹ Ñ‚ÐµÐ°Ñ‚Ñ€'
 
 --9
 SELECT FIO
 FROM Employee e JOIN EmployeeGenre eg ON e.ID = eg.EmployeeID
 				JOIN Genre g ON eg.GenreID = g.ID
-WHERE [Name] = 'âîêàë' AND IsArtist = 0
+WHERE [Name] = 'Ð²Ð¾ÐºÐ°Ð»' AND IsArtist = 0
 
 --10
 SELECT FIO

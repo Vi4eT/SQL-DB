@@ -20,7 +20,7 @@ CREATE TABLE [Construction]
 (
 	[ID] INT PRIMARY KEY IDENTITY,
 	[Name] VARCHAR(50) UNIQUE NOT NULL,
-	[Type] VARCHAR(10) NOT NULL CONSTRAINT Construction_Types CHECK ([Type] IN ('Ñïîðòçàë', 'Ìàíåæ', 'Ñòàäèîí', 'Êîðò'))
+	[Type] VARCHAR(10) NOT NULL CONSTRAINT Construction_Types CHECK ([Type] IN ('Ð¡Ð¿Ð¾Ñ€Ñ‚Ð·Ð°Ð»', 'ÐœÐ°Ð½ÐµÐ¶', 'Ð¡Ñ‚Ð°Ð´Ð¸Ð¾Ð½', 'ÐšÐ¾Ñ€Ñ‚'))
 ) 
 GO
 
@@ -28,7 +28,7 @@ CREATE TABLE [Info]
 (
 	[ID] INT PRIMARY KEY IDENTITY,
 	[ConstructionID] INT NOT NULL REFERENCES Construction (ID),
-	[Type] VARCHAR(20) NOT NULL CONSTRAINT Info_Types CHECK ([Type] IN ('Âìåñòèìîñòü', 'Òèï ïîêðûòèÿ', 'Ïëîùàäü')),
+	[Type] VARCHAR(20) NOT NULL CONSTRAINT Info_Types CHECK ([Type] IN ('Ð’Ð¼ÐµÑÑ‚Ð¸Ð¼Ð¾ÑÑ‚ÑŒ', 'Ð¢Ð¸Ð¿ Ð¿Ð¾ÐºÑ€Ñ‹Ñ‚Ð¸Ñ', 'ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ')),
 	[Value] VARCHAR(50) NOT NULL
 )
 GO
@@ -74,7 +74,7 @@ INSERT INTO [Category] VALUES
 	(1, '3'),
 	(2, '2'),
 	(3, '1'),
-	(4, 'ÊÌÑ')
+	(4, 'ÐšÐœÐ¡')
 GO
 
 CREATE TABLE [SportsmanCoach]
@@ -119,41 +119,41 @@ GO
 
 ------------QUERIES------------
 ----1----
---óêàçàííûé òèï
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ð¹ Ñ‚Ð¸Ð¿
 SELECT [Name]
 FROM Construction
-WHERE [Type] = 'ñòàäèîí'
---óêàçàííûå òèï è õàðàêòåðèñòèêè
+WHERE [Type] = 'ÑÑ‚Ð°Ð´Ð¸Ð¾Ð½'
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ðµ Ñ‚Ð¸Ð¿ Ð¸ Ñ…Ð°Ñ€Ð°ÐºÑ‚ÐµÑ€Ð¸ÑÑ‚Ð¸ÐºÐ¸
 SELECT [Name], i.[Type], [Value]
 FROM Construction c JOIN Info i ON c.ID = i.ConstructionID
-WHERE c.[Type] = 'ñòàäèîí' AND i.[Type] = 'âìåñòèìîñòü' AND [Value] >= 30000
+WHERE c.[Type] = 'ÑÑ‚Ð°Ð´Ð¸Ð¾Ð½' AND i.[Type] = 'Ð²Ð¼ÐµÑÑ‚Ð¸Ð¼Ð¾ÑÑ‚ÑŒ' AND [Value] >= 30000
 
 ----2----
---óêàçàííûé âèä ñïîðòà
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ð¹ Ð²Ð¸Ð´ ÑÐ¿Ð¾Ñ€Ñ‚Ð°
 SELECT s.FIO
 FROM Sportsman s JOIN SportsmanCategory sc ON s.ID = sc.SportsmanID
 				 JOIN SportKind sk ON sc.SportKindID = sk.ID
-WHERE Kind = 'õîêêåé'
---óêàçàííûå âèä è ðàçðÿä
+WHERE Kind = 'Ñ…Ð¾ÐºÐºÐµÐ¹'
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ðµ Ð²Ð¸Ð´ Ð¸ Ñ€Ð°Ð·Ñ€ÑÐ´
 SELECT s.FIO, c.[Name] Category
 FROM Sportsman s JOIN SportsmanCategory sc ON s.ID = sc.SportsmanID
 				 JOIN SportKind sk ON sc.SportKindID = sk.ID
 				 JOIN Category c ON sc.CategoryID = c.ID
-WHERE Kind = 'õîêêåé' AND CategoryID >= (SELECT ID FROM Category WHERE [Name] = '2')
+WHERE Kind = 'Ñ…Ð¾ÐºÐºÐµÐ¹' AND CategoryID >= (SELECT ID FROM Category WHERE [Name] = '2')
 
 ----3----
---óêàçàííûé òðåíåð
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ð¹ Ñ‚Ñ€ÐµÐ½ÐµÑ€
 SELECT s.FIO
 FROM Sportsman s JOIN SportsmanCoach sc ON s.ID = sc.SportsmanID
 				 JOIN Coach c ON sc.CoachID = c.ID
-WHERE c.FIO = 'áåëÿåâ ïåòð ïåòðîâè÷'
---óêàçàííûå òðåíåð è ðàçðÿä
+WHERE c.FIO = 'Ð±ÐµÐ»ÑÐµÐ² Ð¿ÐµÑ‚Ñ€ Ð¿ÐµÑ‚Ñ€Ð¾Ð²Ð¸Ñ‡'
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ðµ Ñ‚Ñ€ÐµÐ½ÐµÑ€ Ð¸ Ñ€Ð°Ð·Ñ€ÑÐ´
 SELECT s.FIO, cat.[Name]
 FROM Sportsman s JOIN SportsmanCoach sc ON s.ID = sc.SportsmanID
 				 JOIN Coach c ON sc.CoachID = c.ID
 				 JOIN SportsmanCategory scat ON s.ID = scat.SportsmanID
 				 JOIN Category cat ON scat.CategoryID = cat.ID
-WHERE c.FIO = 'áåëÿåâ ïåòð ïåòðîâè÷' AND cat.[Name] = 'êìñ'
+WHERE c.FIO = 'Ð±ÐµÐ»ÑÐµÐ² Ð¿ÐµÑ‚Ñ€ Ð¿ÐµÑ‚Ñ€Ð¾Ð²Ð¸Ñ‡' AND cat.[Name] = 'ÐºÐ¼Ñ'
 
 ----4----
 SELECT FIO, Kind
@@ -168,38 +168,38 @@ WHERE s.ID IN (SELECT SportsmanID
 SELECT c.FIO
 FROM Coach c JOIN SportsmanCoach sc ON sc.CoachID = c.ID
 			 JOIN Sportsman s ON s.ID = sc.SportsmanID
-WHERE s.FIO = 'ïåòðîâ ïåòð ïåòðîâè÷'
+WHERE s.FIO = 'Ð¿ÐµÑ‚Ñ€Ð¾Ð² Ð¿ÐµÑ‚Ñ€ Ð¿ÐµÑ‚Ñ€Ð¾Ð²Ð¸Ñ‡'
 
 ----6----
---óêàçàííûé ïåðèîä
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ð¹ Ð¿ÐµÑ€Ð¸Ð¾Ð´
 SELECT c.[Name], Organizer, Kind, co.[Name] Venue, StartDate, EndDate
 FROM Competition c JOIN SportKind sk ON c.SportKindID = sk.ID
 				   JOIN Construction co ON c.ConstructionID = co.ID
 WHERE StartDate >= '20210101' AND EndDate <= '20210331'
---óêàçàííûå ïåðèîä è îðãàíèçàòîð
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ðµ Ð¿ÐµÑ€Ð¸Ð¾Ð´ Ð¸ Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ‚Ð¾Ñ€
 SELECT c.[Name], Kind, co.[Name] Venue, StartDate, EndDate
 FROM Competition c JOIN SportKind sk ON c.SportKindID = sk.ID
 				   JOIN Construction co ON c.ConstructionID = co.ID
-WHERE StartDate >= '20210101' AND EndDate <= '20210531' AND Organizer = 'îàî ãàçïðîì'
+WHERE StartDate >= '20210101' AND EndDate <= '20210531' AND Organizer = 'Ð¾Ð°Ð¾ Ð³Ð°Ð·Ð¿Ñ€Ð¾Ð¼'
 
 ----7----
 SELECT s.FIO, Place
 FROM Sportsman s JOIN SportsmanCompetition sc ON s.ID = sc.SportsmanID
 				 JOIN Competition c ON c.ID = sc.CompetitionID
-WHERE [Name] = 'ëèãà ÷åìïèîíîâ' AND Place <= 3
+WHERE [Name] = 'Ð»Ð¸Ð³Ð° Ñ‡ÐµÐ¼Ð¿Ð¸Ð¾Ð½Ð¾Ð²' AND Place <= 3
 ORDER BY Place
 
 ----8----
---óêàçàííîå ñîîðóæåíèå
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ð¾Ðµ ÑÐ¾Ð¾Ñ€ÑƒÐ¶ÐµÐ½Ð¸Ðµ
 SELECT c.[Name], Organizer, Kind, StartDate, EndDate
 FROM Competition c JOIN SportKind sk ON c.SportKindID = sk.ID
 				   JOIN Construction co ON c.ConstructionID = co.ID
-WHERE co.[Name] = 'çåíèò àðåíà'
---óêàçàííûå ñîîðóæåíèå è âèä
+WHERE co.[Name] = 'Ð·ÐµÐ½Ð¸Ñ‚ Ð°Ñ€ÐµÐ½Ð°'
+--ÑƒÐºÐ°Ð·Ð°Ð½Ð½Ñ‹Ðµ ÑÐ¾Ð¾Ñ€ÑƒÐ¶ÐµÐ½Ð¸Ðµ Ð¸ Ð²Ð¸Ð´
 SELECT c.[Name], Organizer, StartDate, EndDate
 FROM Competition c JOIN SportKind sk ON c.SportKindID = sk.ID
 				   JOIN Construction co ON c.ConstructionID = co.ID
-WHERE co.[Name] = 'çåíèò àðåíà' AND Kind = 'ôóòáîë'
+WHERE co.[Name] = 'Ð·ÐµÐ½Ð¸Ñ‚ Ð°Ñ€ÐµÐ½Ð°' AND Kind = 'Ñ„ÑƒÑ‚Ð±Ð¾Ð»'
 
 ----9----
 SELECT c.[Name], COUNT(DISTINCT SportsmanID) Competitors
@@ -212,7 +212,7 @@ GROUP BY c.[Name]
 ----10----
 SELECT FIO
 FROM Coach c JOIN SportKind sk ON c.SportKindID = sk.ID
-WHERE Kind = 'ïëàâàíèå'
+WHERE Kind = 'Ð¿Ð»Ð°Ð²Ð°Ð½Ð¸Ðµ'
 
 ----11----
 SELECT FIO

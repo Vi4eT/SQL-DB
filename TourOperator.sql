@@ -47,8 +47,8 @@ CREATE TABLE [Tourist](
 	[Surname] varchar(50) NOT NULL,
 	[Name] varchar(50) NOT NULL,
 	[Patronymic] varchar(50) NOT NULL,
-	[Type] varchar(10) NOT NULL CONSTRAINT CK_Tourist_Type CHECK ([Type] IN ('Отдых', 'Шопинг')),
-	[Sex] char(1) NOT NULL CONSTRAINT CK_Tourist_Sex CHECK (Sex IN ('М', 'Ж')),
+	[Type] varchar(10) NOT NULL CONSTRAINT CK_Tourist_Type CHECK ([Type] IN ('РћС‚РґС‹С…', 'РЁРѕРїРёРЅРі')),
+	[Sex] char(1) NOT NULL CONSTRAINT CK_Tourist_Sex CHECK (Sex IN ('Рњ', 'Р–')),
 	[Birthday] date NOT NULL,
 	[ResponsibleID] bigint NULL REFERENCES [Tourist] 
 		CONSTRAINT CK_Tourist_Responsible_Age CHECK (dbo.get_age(dbo.get_birthday(ResponsibleID)) >= 18),
@@ -122,7 +122,7 @@ GO
 CREATE TABLE [Schedule](
 	[ID] int PRIMARY KEY IDENTITY,
 	[PassportID] bigint NOT NULL REFERENCES [Tourist] (PassportID)
-		CONSTRAINT CK_Schedule_PassportID_Type CHECK (dbo.get_tourist_type(PassportID) = 'Отдых'),
+		CONSTRAINT CK_Schedule_PassportID_Type CHECK (dbo.get_tourist_type(PassportID) = 'РћС‚РґС‹С…'),
 	[ExcursionID] int NOT NULL REFERENCES [Excursion] (ID),
 	[Date] date NOT NULL,
 	CONSTRAINT CK_Schedule_Date CHECK (dbo.check_date(PassportID, [Date]) = 0),
@@ -132,7 +132,7 @@ GO
 
 CREATE FUNCTION check_cargo_plane(@Type varchar(20), @IsStartPlane bit) RETURNS bit AS
 BEGIN
-	IF @Type = 'Грузовой'
+	IF @Type = 'Р“СЂСѓР·РѕРІРѕР№'
 		RETURN @IsStartPlane
 	RETURN 0
 END
@@ -140,7 +140,7 @@ GO
 
 CREATE TABLE [Plane](
 	[ID] int PRIMARY KEY IDENTITY,
-	[Type] varchar(20) NOT NULL CONSTRAINT CK_Plane_Type CHECK ([Type] IN ('Пассажирский', 'Грузопассажирский', 'Грузовой')),
+	[Type] varchar(20) NOT NULL CONSTRAINT CK_Plane_Type CHECK ([Type] IN ('РџР°СЃСЃР°Р¶РёСЂСЃРєРёР№', 'Р“СЂСѓР·РѕРїР°СЃСЃР°Р¶РёСЂСЃРєРёР№', 'Р“СЂСѓР·РѕРІРѕР№')),
 	[Name] varchar(50) NOT NULL,
 	[IsStartPlane] bit NOT NULL,
 	[Price] money NOT NULL,
@@ -223,7 +223,7 @@ CREATE TABLE [TouristTour](
 	[EndPlaneID] int NOT NULL REFERENCES [Plane] (ID)
 		CONSTRAINT CK_TouristTour_EndPlane_Check CHECK (dbo.is_start_plane(EndPlaneID) = 0),
 	[HotelID] int NOT NULL REFERENCES [Hotel] (ID),
-	CONSTRAINT CK_TouristTour_EndPlane_Type CHECK (dbo.get_plane_type(EndPlaneID) != 'Грузовой'),
+	CONSTRAINT CK_TouristTour_EndPlane_Type CHECK (dbo.get_plane_type(EndPlaneID) != 'Р“СЂСѓР·РѕРІРѕР№'),
 	CONSTRAINT CK_TouristTour_Hotel_SameAsResponsible CHECK (dbo.check_hotel(PassportID, HotelID) = 0),
 	CONSTRAINT CK_TouristTour_Tour_SameAsResponsible CHECK (dbo.check_tour(PassportID, TourID) = 0),
 	CONSTRAINT CK_TouristTour_EndDate CHECK (EndDate >= StartDate)
@@ -233,11 +233,11 @@ GO
 CREATE TABLE [Cargo](
 	[ID] int PRIMARY KEY IDENTITY,
 	[PassportID] bigint NOT NULL REFERENCES [Tourist] (PassportID)
-		CONSTRAINT CK_Cargo_PassportID_Type CHECK (dbo.get_tourist_type(PassportID) = 'Шопинг'),
+		CONSTRAINT CK_Cargo_PassportID_Type CHECK (dbo.get_tourist_type(PassportID) = 'РЁРѕРїРёРЅРі'),
 	[Name] varchar(50) NOT NULL,
 	[Date] date NOT NULL,
 	[PlaneID] int NOT NULL REFERENCES [Plane] (ID)
-		CONSTRAINT CK_Cargo_Plane_Type CHECK (dbo.get_plane_type(PlaneID) != 'Пассажирский'),
+		CONSTRAINT CK_Cargo_Plane_Type CHECK (dbo.get_plane_type(PlaneID) != 'РџР°СЃСЃР°Р¶РёСЂСЃРєРёР№'),
 	[Places] int NOT NULL,
 	[Weight] int NOT NULL,
 	[PackingCost] money NOT NULL,
@@ -254,15 +254,15 @@ CREATE TABLE [FinanceType](
 GO
 
 INSERT INTO FinanceType ([Name]) VALUES 
-	('Гостиница'), 
-	('Перевозка'),
-	('Перелет'),
-	('Экскурсия'),
-	('Виза'),
-	('Обслуживание самолета'),
-	('Хранение груза'),
-	('Путевка'),
-	('Услуги представительства')
+	('Р“РѕСЃС‚РёРЅРёС†Р°'), 
+	('РџРµСЂРµРІРѕР·РєР°'),
+	('РџРµСЂРµР»РµС‚'),
+	('Р­РєСЃРєСѓСЂСЃРёСЏ'),
+	('Р’РёР·Р°'),
+	('РћР±СЃР»СѓР¶РёРІР°РЅРёРµ СЃР°РјРѕР»РµС‚Р°'),
+	('РҐСЂР°РЅРµРЅРёРµ РіСЂСѓР·Р°'),
+	('РџСѓС‚РµРІРєР°'),
+	('РЈСЃР»СѓРіРё РїСЂРµРґСЃС‚Р°РІРёС‚РµР»СЊСЃС‚РІР°')
 GO
 
 CREATE FUNCTION check_finance_type(@TouristTourID int, @TypeID tinyint) RETURNS bit AS
@@ -274,9 +274,9 @@ BEGIN
 	DECLARE @t2 varchar(50) = (SELECT [Name]
 							   FROM FinanceType
 							   WHERE @TypeID = ID)
-	IF @t1 = 'Отдых' AND @t2 = 'Хранение груза'
+	IF @t1 = 'РћС‚РґС‹С…' AND @t2 = 'РҐСЂР°РЅРµРЅРёРµ РіСЂСѓР·Р°'
 		RETURN 1
-	IF @t1 = 'Шопинг' AND @t2 = 'Экскурсия'
+	IF @t1 = 'РЁРѕРїРёРЅРі' AND @t2 = 'Р­РєСЃРєСѓСЂСЃРёСЏ'
 		RETURN 1
 	RETURN 0
 END
@@ -303,56 +303,56 @@ CREATE TABLE [Expense](
 GO
 
 
-/*** ЗАПРОСЫ ***/
+/*** Р—РђРџР РћРЎР« ***/
 /*** 1 ***/
---все
+--РІСЃРµ
 SELECT *
 FROM Tourist
---указанной категории
+--СѓРєР°Р·Р°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё
 SELECT *
 FROM Tourist
-WHERE [Type] = 'Отдых'
+WHERE [Type] = 'РћС‚РґС‹С…'
 
 /*** 2 ***/
---указанная гостиница
+--СѓРєР°Р·Р°РЅРЅР°СЏ РіРѕСЃС‚РёРЅРёС†Р°
 SELECT DISTINCT t.*
 FROM Tourist t, TouristTour tt, Hotel h
 WHERE t.PassportID = tt.PassportID AND tt.HotelID = h.ID AND h.[Name] = 'no-tell'
---указанные гостиница и категория
+--СѓРєР°Р·Р°РЅРЅС‹Рµ РіРѕСЃС‚РёРЅРёС†Р° Рё РєР°С‚РµРіРѕСЂРёСЏ
 SELECT DISTINCT t.*
 FROM Tourist t, TouristTour tt, Hotel h
-WHERE t.PassportID = tt.PassportID AND tt.HotelID = h.ID AND h.[Name] = 'no-tell' AND [Type] = 'Отдых'
+WHERE t.PassportID = tt.PassportID AND tt.HotelID = h.ID AND h.[Name] = 'no-tell' AND [Type] = 'РћС‚РґС‹С…'
 
 /*** 3 ***/
---все
+--РІСЃРµ
 SELECT COUNT(DISTINCT PassportID) Quantity
 FROM TouristTour
 WHERE StartDate BETWEEN '20200101' AND '20210515'
---указанной категории
+--СѓРєР°Р·Р°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё
 SELECT COUNT(DISTINCT PassportID) Quantity
 FROM TouristTour
-WHERE StartDate BETWEEN '20200101' AND '20210515' AND dbo.get_tourist_type(PassportID) = 'Отдых'
+WHERE StartDate BETWEEN '20200101' AND '20210515' AND dbo.get_tourist_type(PassportID) = 'РћС‚РґС‹С…'
 
 /*** 4 ***/
---количество посещений
+--РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЃРµС‰РµРЅРёР№
 SELECT COUNT(PassportID) [Visit count]
 FROM TouristTour
 WHERE PassportID = 32165446
---даты посещений, отели
+--РґР°С‚С‹ РїРѕСЃРµС‰РµРЅРёР№, РѕС‚РµР»Рё
 SELECT StartDate, EndDate, [Name] Hotel
 FROM TouristTour, Hotel
 WHERE PassportID = 32165446 AND HotelID = Hotel.ID
---экскурсии
+--СЌРєСЃРєСѓСЂСЃРёРё
 SELECT [Name] Excursion, [Date]
 FROM Schedule, Excursion
 WHERE PassportID = 32165446 AND ExcursionID = Excursion.ID
---грузы
+--РіСЂСѓР·С‹
 SELECT [Date], PlaneID, Places, [Weight], PackingCost, InsuranceCost, Total
 FROM Cargo
 WHERE PassportID = 69876468
 
 /*** 5 ***/
---гостиницы
+--РіРѕСЃС‚РёРЅРёС†С‹
 SELECT [Name], COUNT(HotelID) [Rooms occupied]
 FROM Hotel, (SELECT HotelID
 			 FROM TouristTour t, (SELECT PassportID, MAX(EndDate) [Date]
@@ -362,7 +362,7 @@ FROM Hotel, (SELECT HotelID
 			 WHERE t.PassportID = s1.PassportID AND t.EndDate = s1.[Date]) sub
 WHERE HotelID = ID
 GROUP BY [Name]
---количество человек за период
+--РєРѕР»РёС‡РµСЃС‚РІРѕ С‡РµР»РѕРІРµРє Р·Р° РїРµСЂРёРѕРґ
 SELECT [Name], COUNT(HotelID) Quantity
 FROM Hotel, (SELECT DISTINCT PassportID, HotelID
 			 FROM TouristTour
@@ -376,13 +376,13 @@ FROM Schedule
 WHERE [Date] BETWEEN '20200101' AND '20211231'
 
 /*** 7 ***/
---экскурсии по популярности
+--СЌРєСЃРєСѓСЂСЃРёРё РїРѕ РїРѕРїСѓР»СЏСЂРЅРѕСЃС‚Рё
 SELECT [Name] Excursion, COUNT(ExcursionID) [Orders quantity]
 FROM Schedule, Excursion e
 WHERE ExcursionID = e.ID
 GROUP BY [Name]
 ORDER BY COUNT(ExcursionID) DESC
---агентства по популярности
+--Р°РіРµРЅС‚СЃС‚РІР° РїРѕ РїРѕРїСѓР»СЏСЂРЅРѕСЃС‚Рё
 SELECT a.[Name] Agency, SUM(Orders) [Orders quantity]
 FROM Agency a, Excursion e, (SELECT ExcursionID, COUNT(ExcursionID) Orders
 							 FROM Schedule
@@ -392,18 +392,18 @@ GROUP BY a.[Name]
 ORDER BY SUM(Orders) DESC
 
 /*** 8 ***/
---рейс туда, занятые места
+--СЂРµР№СЃ С‚СѓРґР°, Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р°
 SELECT COUNT(StartPlaneID) [Places occupied]
 FROM TouristTour, Plane p
-WHERE p.ID = StartPlaneID AND [Name] = 'рейс1' AND StartDate = '20210402'
---рейс обратно, занятые места
+WHERE p.ID = StartPlaneID AND [Name] = 'СЂРµР№СЃ1' AND StartDate = '20210402'
+--СЂРµР№СЃ РѕР±СЂР°С‚РЅРѕ, Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р°
 SELECT COUNT(EndPlaneID) [Places occupied]
 FROM TouristTour, Plane p
-WHERE p.ID = EndPlaneID AND [Name] = 'рейс4' AND EndDate = '20210416'
---груз
+WHERE p.ID = EndPlaneID AND [Name] = 'СЂРµР№СЃ4' AND EndDate = '20210416'
+--РіСЂСѓР·
 SELECT SUM(Places) [Cargo Places], SUM([Weight]) [Weight]
 FROM Cargo, Plane p
-WHERE p.ID = PlaneID AND p.[Name] = 'рейс5' AND [Date] = '20210501'
+WHERE p.ID = PlaneID AND p.[Name] = 'СЂРµР№СЃ5' AND [Date] = '20210501'
 
 /*** 9 ***/
 DECLARE @d1 date = '20210501'
@@ -412,28 +412,28 @@ SELECT s1.Planes [Cargo planes], s2.Planes [Combined planes], s1.Planes + s2.Pla
 	   s1.Places + s2.Places [Cargo places total], s1.[Weight] + s2.[Weight] [Weight total]
 FROM (SELECT COUNT(DISTINCT CONCAT(PlaneID, [Date])) Planes, SUM(Places) Places, SUM([Weight]) [Weight]
 	  FROM Cargo
-	  WHERE [Date] BETWEEN @d1 AND @d2 AND dbo.get_plane_type(PlaneID) = 'Грузовой') s1,
+	  WHERE [Date] BETWEEN @d1 AND @d2 AND dbo.get_plane_type(PlaneID) = 'Р“СЂСѓР·РѕРІРѕР№') s1,
 	 (SELECT COUNT(DISTINCT CONCAT(PlaneID, [Date])) Planes, SUM(Places) Places, SUM([Weight]) [Weight]
 	  FROM Cargo
-	  WHERE [Date] BETWEEN @d1 AND @d2 AND dbo.get_plane_type(PlaneID) = 'Грузопассажирский') s2
+	  WHERE [Date] BETWEEN @d1 AND @d2 AND dbo.get_plane_type(PlaneID) = 'Р“СЂСѓР·РѕРїР°СЃСЃР°Р¶РёСЂСЃРєРёР№') s2
 GO
 
 /*** 10 ***/
---все
-SELECT 'Доход' [Type], TouristTourID, [Name], Amount, [Date]
+--РІСЃРµ
+SELECT 'Р”РѕС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Income, FinanceType t
 WHERE TypeID = t.ID
 UNION ALL
-SELECT 'Расход' [Type], TouristTourID, [Name], Amount, [Date]
+SELECT 'Р Р°СЃС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Expense, FinanceType t
 WHERE TypeID = t.ID
---указанной категории
-DECLARE @t varchar(10) = 'Шопинг'
-SELECT 'Доход' [Type], TouristTourID, [Name], Amount, [Date]
+--СѓРєР°Р·Р°РЅРЅРѕР№ РєР°С‚РµРіРѕСЂРёРё
+DECLARE @t varchar(10) = 'РЁРѕРїРёРЅРі'
+SELECT 'Р”РѕС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Income, FinanceType t, TouristTour 
 WHERE TypeID = t.ID AND TouristTourID = TouristTour.ID AND dbo.get_tourist_type(PassportID) = @t
 UNION ALL
-SELECT 'Расход' [Type], TouristTourID, [Name], Amount, [Date]
+SELECT 'Р Р°СЃС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Expense, FinanceType t, TouristTour 
 WHERE TypeID = t.ID AND TouristTourID = TouristTour.ID AND dbo.get_tourist_type(PassportID) = @t
 GO
@@ -441,11 +441,11 @@ GO
 /*** 11 ***/
 DECLARE @d1 date = '20210101'
 DECLARE @d2 date = '20210430'
-SELECT 'Доход' [Type], TouristTourID, [Name], Amount, [Date]
+SELECT 'Р”РѕС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Income, FinanceType t
 WHERE TypeID = t.ID AND [Date] BETWEEN @d1 AND @d2
 UNION ALL
-SELECT 'Расход' [Type], TouristTourID, [Name], Amount, [Date]
+SELECT 'Р Р°СЃС…РѕРґ' [Type], TouristTourID, [Name], Amount, [Date]
 FROM Expense, FinanceType t
 WHERE TypeID = t.ID AND [Date] BETWEEN @d1 AND @d2
 GO
@@ -468,38 +468,38 @@ FROM (SELECT SUM(Amount) Income
 	  FROM Expense) s2
 
 /*** 14 ***/
---все
+--РІСЃРµ
 SELECT CONCAT(CAST(s1.Quantity AS real)/s2.Quantity*100, '%') [Percentage]
 FROM (SELECT COUNT(DISTINCT PassportID) Quantity
 	  FROM TouristTour
-	  WHERE dbo.get_tourist_type(PassportID) = 'Отдых') s1,
+	  WHERE dbo.get_tourist_type(PassportID) = 'РћС‚РґС‹С…') s1,
 	 (SELECT COUNT(DISTINCT PassportID) Quantity
 	  FROM TouristTour
-	  WHERE dbo.get_tourist_type(PassportID) = 'Шопинг') s2
---за период
+	  WHERE dbo.get_tourist_type(PassportID) = 'РЁРѕРїРёРЅРі') s2
+--Р·Р° РїРµСЂРёРѕРґ
 DECLARE @d1 date = '20210101'
 DECLARE @d2 date = '20210430'
 SELECT CONCAT(CAST(s1.Quantity AS real)/s2.Quantity*100, '%') [Percentage]
 FROM (SELECT COUNT(DISTINCT PassportID) Quantity
 	  FROM TouristTour
-	  WHERE dbo.get_tourist_type(PassportID) = 'Отдых' AND [StartDate] BETWEEN @d1 AND @d2) s1,
+	  WHERE dbo.get_tourist_type(PassportID) = 'РћС‚РґС‹С…' AND [StartDate] BETWEEN @d1 AND @d2) s1,
 	 (SELECT COUNT(DISTINCT PassportID) Quantity
 	  FROM TouristTour
-	  WHERE dbo.get_tourist_type(PassportID) = 'Шопинг' AND [StartDate] BETWEEN @d1 AND @d2) s2
+	  WHERE dbo.get_tourist_type(PassportID) = 'РЁРѕРїРёРЅРі' AND [StartDate] BETWEEN @d1 AND @d2) s2
 GO
 
 /*** 15 ***/
---рейс туда
+--СЂРµР№СЃ С‚СѓРґР°
 SELECT tt.PassportID, Surname, t.[Name], Patronymic, h.[Name] Hotel
 FROM TouristTour tt, Plane p, Tourist t, Hotel h
 WHERE tt.StartPlaneID = p.ID AND tt.PassportID = t.PassportID AND HotelID = h.ID
-	  AND p.[Name] = 'рейс1' AND [StartDate] = '20210402'
---рейс обратно
+	  AND p.[Name] = 'СЂРµР№СЃ1' AND [StartDate] = '20210402'
+--СЂРµР№СЃ РѕР±СЂР°С‚РЅРѕ
 SELECT tt.PassportID, Surname, t.[Name], Patronymic, h.[Name] Hotel
 FROM TouristTour tt, Plane p, Tourist t, Hotel h
 WHERE tt.EndPlaneID = p.ID AND tt.PassportID = t.PassportID AND HotelID = h.ID
-	  AND p.[Name] = 'рейс5' AND [EndDate] = '20210416'
---груз
+	  AND p.[Name] = 'СЂРµР№СЃ5' AND [EndDate] = '20210416'
+--РіСЂСѓР·
 SELECT PassportID, c.[Name], Places, [Weight]
 FROM Cargo c, Plane p
-WHERE p.[Name] = 'рейс5' AND [Date] = '20210416'
+WHERE p.[Name] = 'СЂРµР№СЃ5' AND [Date] = '20210416'

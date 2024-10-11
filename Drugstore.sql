@@ -9,7 +9,7 @@ DROP DATABASE [DrugstoreDB]
 GO
 
 -- 15 --
---TODO: совместить sale и order?, fine tuning, размеры varchar
+--TODO: СЃРѕРІРјРµСЃС‚РёС‚СЊ sale Рё order?, fine tuning, СЂР°Р·РјРµСЂС‹ varchar
 --Create DB
 CREATE DATABASE [DrugstoreDB]
 GO
@@ -25,12 +25,12 @@ CREATE TABLE [DrugType]
 GO
 
 INSERT INTO DrugType ([Name]) VALUES 
-	('Таблетки'), 
-	('Мазь'), 
-	('Настойка'),
-	('Микстура'), 
-	('Раствор'),
-	('Порошок')
+	('РўР°Р±Р»РµС‚РєРё'), 
+	('РњР°Р·СЊ'), 
+	('РќР°СЃС‚РѕР№РєР°'),
+	('РњРёРєСЃС‚СѓСЂР°'), 
+	('Р Р°СЃС‚РІРѕСЂ'),
+	('РџРѕСЂРѕС€РѕРє')
 GO
 
 CREATE TABLE Drug
@@ -107,10 +107,10 @@ CREATE TABLE [OrderStatus]
 GO
 
 INSERT INTO OrderStatus ([Name]) VALUES 
-	('Нет компонентов'), 
-	('В производстве'), 
-	('Готов к выдаче'), 
-	('Выполнен')
+	('РќРµС‚ РєРѕРјРїРѕРЅРµРЅС‚РѕРІ'), 
+	('Р’ РїСЂРѕРёР·РІРѕРґСЃС‚РІРµ'), 
+	('Р“РѕС‚РѕРІ Рє РІС‹РґР°С‡Рµ'), 
+	('Р’С‹РїРѕР»РЅРµРЅ')
 GO
 
 CREATE TABLE [Order]
@@ -150,16 +150,16 @@ SELECT DISTINCT FIO, Birthdate, Phone, [Address]
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN [Order] o ON r.ID = o.RecipeID
 			  JOIN OrderStatus os ON o.StatusID = os.ID
-WHERE ManufactureDate < CAST(GETDATE() AS date) AND [Name] = 'готов к выдаче'
+WHERE ManufactureDate < CAST(GETDATE() AS date) AND [Name] = 'РіРѕС‚РѕРІ Рє РІС‹РґР°С‡Рµ'
 
 --2
---в целом
+--РІ С†РµР»РѕРј
 SELECT DISTINCT FIO, Birthdate, Phone, [Address]
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN [Order] o ON r.ID = o.RecipeID
 			  JOIN OrderStatus os ON o.StatusID = os.ID
-WHERE os.[Name] = 'нет компонентов'
---категория
+WHERE os.[Name] = 'РЅРµС‚ РєРѕРјРїРѕРЅРµРЅС‚РѕРІ'
+--РєР°С‚РµРіРѕСЂРёСЏ
 SELECT DISTINCT FIO, Birthdate, Phone, [Address]
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN [Order] o ON r.ID = o.RecipeID
@@ -167,44 +167,44 @@ FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN Prescription p ON r.ID = p.RecipeID
 			  JOIN Drug d ON d.ID = p.DrugID
 			  JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE os.[Name] = 'нет компонентов' AND dt.[Name] = 'мазь'
+WHERE os.[Name] = 'РЅРµС‚ РєРѕРјРїРѕРЅРµРЅС‚РѕРІ' AND dt.[Name] = 'РјР°Р·СЊ'
 
 --3
---в целом
+--РІ С†РµР»РѕРј
 SELECT TOP(10) [Name], SUM(s.Amount) Used
 FROM Sale s JOIN Drug d ON s.DrugID = d.ID
 GROUP BY [Name]
 ORDER BY SUM(s.Amount) DESC
---категория
+--РєР°С‚РµРіРѕСЂРёСЏ
 SELECT TOP(10) d.[Name], SUM(s.Amount) Used
 FROM Sale s JOIN Drug d ON s.DrugID = d.ID
 			JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE dt.[Name] = 'таблетки'
+WHERE dt.[Name] = 'С‚Р°Р±Р»РµС‚РєРё'
 GROUP BY d.[Name]
 ORDER BY SUM(s.Amount) DESC
 
 --4
 SELECT [Name], SUM(s.Amount) Used
 FROM Sale s JOIN Drug d ON s.DrugID = d.ID
-WHERE [Name] = 'найз' AND [Date] BETWEEN '20220101' AND '20220201'
+WHERE [Name] = 'РЅР°Р№Р·' AND [Date] BETWEEN '20220101' AND '20220201'
 GROUP BY [Name]
 
 --5 
---лекарство
+--Р»РµРєР°СЂСЃС‚РІРѕ
 SELECT DISTINCT FIO, Birthdate, Phone, [Address]
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN [Order] o ON r.ID = o.RecipeID
 			  JOIN Prescription p ON r.ID = p.RecipeID
 			  JOIN Drug d ON d.ID = p.DrugID
-WHERE d.[Name] = 'парацетамол' AND OrderDate BETWEEN '20220201' AND '20220301'
---тип
+WHERE d.[Name] = 'РїР°СЂР°С†РµС‚Р°РјРѕР»' AND OrderDate BETWEEN '20220201' AND '20220301'
+--С‚РёРї
 SELECT DISTINCT FIO, Birthdate, Phone, [Address]
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN [Order] o ON r.ID = o.RecipeID
 			  JOIN Prescription p ON r.ID = p.RecipeID
 			  JOIN Drug d ON d.ID = p.DrugID
 			  JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE dt.[Name] = 'таблетки' AND OrderDate BETWEEN '20220201' AND '20220301'
+WHERE dt.[Name] = 'С‚Р°Р±Р»РµС‚РєРё' AND OrderDate BETWEEN '20220201' AND '20220301'
 
 --6
 SELECT d.[Name], dt.[Name] [Type]
@@ -212,53 +212,53 @@ FROM Drug d JOIN DrugType dt ON d.TypeID = dt.ID
 WHERE Amount <= CriticalAmount
 
 --7 
---в целом
+--РІ С†РµР»РѕРј
 SELECT [Name], Amount
 FROM Drug
 WHERE Amount <= 50
---категория
+--РєР°С‚РµРіРѕСЂРёСЏ
 SELECT d.[Name], Amount
 FROM Drug d JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE Amount <= 50 AND dt.[Name] = 'таблетки'
+WHERE Amount <= 50 AND dt.[Name] = 'С‚Р°Р±Р»РµС‚РєРё'
 
 --8
 SELECT o.ID, OrderDate, Price
 FROM [Order] o JOIN OrderStatus os ON o.StatusID = os.ID
-WHERE [Name] = 'в производстве'
+WHERE [Name] = 'РІ РїСЂРѕРёР·РІРѕРґСЃС‚РІРµ'
 
 --9
 SELECT d.[Name], SUM(p.Amount) Amount
 FROM Prescription p JOIN Drug d ON p.DrugID = d.ID
 					JOIN [Order] o ON o.RecipeID = p.RecipeID
 					JOIN OrderStatus os ON o.StatusID = os.ID
-WHERE os.[Name] = 'в производстве'
+WHERE os.[Name] = 'РІ РїСЂРѕРёР·РІРѕРґСЃС‚РІРµ'
 GROUP BY d.[Name]
 
 --10 
---тип
+--С‚РёРї
 SELECT d.[Name], [Description]
 FROM Tech t JOIN Drug d ON t.DrugID = d.ID
 			JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE dt.[Name] = 'мазь'
---лекарство
+WHERE dt.[Name] = 'РјР°Р·СЊ'
+--Р»РµРєР°СЂСЃС‚РІРѕ
 SELECT [Name], [Description]
 FROM Tech t JOIN Drug d ON t.DrugID = d.ID
-WHERE [Name] = 'парацетамол'
---в производстве
+WHERE [Name] = 'РїР°СЂР°С†РµС‚Р°РјРѕР»'
+--РІ РїСЂРѕРёР·РІРѕРґСЃС‚РІРµ
 SELECT DISTINCT d.[Name], [Description]
 FROM [Order] o JOIN Prescription p ON p.RecipeID = o.RecipeID
 			   JOIN Drug d ON p.DrugID = d.ID
 			   JOIN Tech t ON t.DrugID = d.ID
 			   JOIN OrderStatus os ON o.StatusID = os.ID
-WHERE os.[Name] = 'в производстве'
+WHERE os.[Name] = 'РІ РїСЂРѕРёР·РІРѕРґСЃС‚РІРµ'
 
 --11
-DECLARE @n varchar(50) = 'терафлю'
-SELECT [Name], 'Лекарство' [Type], Price, Amount
+DECLARE @n varchar(50) = 'С‚РµСЂР°С„Р»СЋ'
+SELECT [Name], 'Р›РµРєР°СЂСЃС‚РІРѕ' [Type], Price, Amount
 FROM Drug
 WHERE [Name] = @n
 UNION
-SELECT c.[Name], 'Компонент' [Type], c.Price, co.Amount
+SELECT c.[Name], 'РљРѕРјРїРѕРЅРµРЅС‚' [Type], c.Price, co.Amount
 FROM Drug d JOIN Composition co ON d.ID = co.DrugID
 			JOIN Component c ON co.ComponentID = c.ID
 WHERE d.[Name] = @n
@@ -266,32 +266,32 @@ ORDER BY [Type] DESC
 GO
 
 --12
---название
+--РЅР°Р·РІР°РЅРёРµ
 SELECT FIO, Birthdate, [Address], Phone, COUNT(d.[Name]) Amount
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN Prescription p ON r.ID = p.RecipeID
 			  JOIN Drug d ON p.DrugID = d.ID
-WHERE d.[Name] = 'найз'
+WHERE d.[Name] = 'РЅР°Р№Р·'
 GROUP BY FIO, Birthdate, [Address], Phone
 ORDER BY COUNT(d.[Name]) DESC
---тип
+--С‚РёРї
 SELECT FIO, Birthdate, [Address], Phone, COUNT(dt.[Name]) Amount
 FROM Client c JOIN Recipe r ON c.ID = r.ClientID
 			  JOIN Prescription p ON r.ID = p.RecipeID
 			  JOIN Drug d ON p.DrugID = d.ID
 			  JOIN DrugType dt ON d.TypeID = dt.ID
-WHERE dt.[Name] = 'порошок'
+WHERE dt.[Name] = 'РїРѕСЂРѕС€РѕРє'
 GROUP BY FIO, Birthdate, [Address], Phone
 ORDER BY COUNT(dt.[Name]) DESC
 
 --13
-DECLARE @n varchar(50) = 'колдакт'
+DECLARE @n varchar(50) = 'РєРѕР»РґР°РєС‚'
 SELECT d.[Name], dt.[Name] [Type], [Description], Price, Amount
 FROM Drug d JOIN DrugType dt ON d.TypeID = dt.ID
 			JOIN Tech t ON d.ID = t.DrugID
 WHERE d.[Name] = @n
 UNION
-SELECT c.[Name], 'Компонент' [Type], NULL [Description], c.Price, co.Amount
+SELECT c.[Name], 'РљРѕРјРїРѕРЅРµРЅС‚' [Type], NULL [Description], c.Price, co.Amount
 FROM Drug d JOIN Composition co ON d.ID = co.DrugID
 			JOIN Component c ON co.ComponentID = c.ID
 WHERE d.[Name] = @n

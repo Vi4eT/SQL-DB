@@ -29,7 +29,7 @@ CREATE TABLE Employee(
 	[FIO] varchar(100) NOT NULL,
 	[Birthday] date NOT NULL,
 	[Type] varchar(16) NOT NULL 
-		CONSTRAINT CK_Employee_Type CHECK ([Type] IN ('Конструктор', 'Инженер', 'Техник', 'Лаборант', 'Сервис')),
+		CONSTRAINT CK_Employee_Type CHECK ([Type] IN ('РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ', 'РРЅР¶РµРЅРµСЂ', 'РўРµС…РЅРёРє', 'Р›Р°Р±РѕСЂР°РЅС‚', 'РЎРµСЂРІРёСЃ')),
 	[DeptID] int NOT NULL
 )
 GO
@@ -49,7 +49,7 @@ CREATE TABLE [Contract](
 	[ID] int PRIMARY KEY,
 	[Name] varchar(50) NOT NULL,
 	[HeadID] int NOT NULL REFERENCES Employee (ID)
-		CONSTRAINT CK_Contract_HeadID_Type CHECK (dbo.get_type(HeadID) IN ('Конструктор', 'Инженер')),
+		CONSTRAINT CK_Contract_HeadID_Type CHECK (dbo.get_type(HeadID) IN ('РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ', 'РРЅР¶РµРЅРµСЂ')),
 	[StartDate] date NOT NULL,
 	[EndDate] date NOT NULL,
 	CONSTRAINT CK_Contract_Dates CHECK (StartDate <= EndDate)
@@ -60,7 +60,7 @@ CREATE TABLE Project(
 	[ID] int PRIMARY KEY,
 	[Name] varchar(50) NOT NULL,
 	[HeadID] int NOT NULL REFERENCES Employee (ID)
-		CONSTRAINT CK_Project_HeadID_Type CHECK (dbo.get_type(HeadID) IN ('Конструктор', 'Инженер')),
+		CONSTRAINT CK_Project_HeadID_Type CHECK (dbo.get_type(HeadID) IN ('РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ', 'РРЅР¶РµРЅРµСЂ')),
 	[StartDate] date NOT NULL,
 	[EndDate] date NOT NULL,
 	[Cost] money NOT NULL,
@@ -149,30 +149,30 @@ GO
 
 /************************************************/
 /* 1 */
---все
+--РІСЃРµ
 SELECT FIO, Birthday, [Type], [Name] Department
 FROM Employee e JOIN Department d ON e.DeptID = d.ID
---отдел
+--РѕС‚РґРµР»
 SELECT FIO, Birthday, [Type]
 FROM Employee e JOIN Department d ON e.DeptID = d.ID
-WHERE [Name] = 'отдел2'
---категория
+WHERE [Name] = 'РѕС‚РґРµР»2'
+--РєР°С‚РµРіРѕСЂРёСЏ
 SELECT FIO, Birthday, [Name] Department
 FROM Employee e JOIN Department d ON e.DeptID = d.ID
-WHERE [Type] = 'инженер'
+WHERE [Type] = 'РёРЅР¶РµРЅРµСЂ'
 
 /* 2 */
 SELECT FIO Head, Birthday, [Type], [Name] Department
 FROM Employee e JOIN Department d ON e.ID = d.HeadID
 
 /* 3 */
---текущие договоры
+--С‚РµРєСѓС‰РёРµ РґРѕРіРѕРІРѕСЂС‹
 DECLARE @a date = GETDATE()
 SELECT [Name], StartDate, EndDate
 FROM [Contract]
 WHERE StartDate <= @a AND EndDate >= @a
 GO
---проекты в течение 2020 года
+--РїСЂРѕРµРєС‚С‹ РІ С‚РµС‡РµРЅРёРµ 2020 РіРѕРґР°
 DECLARE @a date = '20200101'
 DECLARE @b date = '20201231'
 SELECT [Name], StartDate, EndDate, Cost, FIO Head
@@ -181,26 +181,26 @@ WHERE StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b
 GO
 
 /* 4 */
---проекты по договору
+--РїСЂРѕРµРєС‚С‹ РїРѕ РґРѕРіРѕРІРѕСЂСѓ
 SELECT [Name], StartDate, EndDate, FIO Head
 FROM Project p JOIN Employee e ON p.HeadID = e.ID
 WHERE p.ID IN (SELECT ProjectID
 			   FROM ProjectContract pc JOIN [Contract] c ON c.ID = pc.ContractID
-			   WHERE [Name] = 'контракт1')
---договоры по проекту
+			   WHERE [Name] = 'РєРѕРЅС‚СЂР°РєС‚1')
+--РґРѕРіРѕРІРѕСЂС‹ РїРѕ РїСЂРѕРµРєС‚Сѓ
 SELECT [Name], StartDate, EndDate, FIO Head
 FROM [Contract] c JOIN Employee e ON c.HeadID = e.ID
 WHERE c.ID IN (SELECT ContractID
 			   FROM ProjectContract pc JOIN Project p ON p.ID = pc.ProjectID
-			   WHERE [Name] = 'проект2')
+			   WHERE [Name] = 'РїСЂРѕРµРєС‚2')
 
 /* 5 */
---проекты, выполненные полностью в 2020 году
+--РїСЂРѕРµРєС‚С‹, РІС‹РїРѕР»РЅРµРЅРЅС‹Рµ РїРѕР»РЅРѕСЃС‚СЊСЋ РІ 2020 РіРѕРґСѓ
 SELECT [Name] = ISNULL([Name], 'Total'), SUM(Cost) Cost
 FROM Project p
 WHERE StartDate >= '20200101' AND EndDate <= '20201231'
 GROUP BY ROLLUP([Name])
---договоры, выполненные полностью в 2020 году
+--РґРѕРіРѕРІРѕСЂС‹, РІС‹РїРѕР»РЅРµРЅРЅС‹Рµ РїРѕР»РЅРѕСЃС‚СЊСЋ РІ 2020 РіРѕРґСѓ
 SELECT [Name] = ISNULL(c.[Name], 'Total'), COUNT(ProjectID) Projects, SUM(Cost) Cost
 FROM Project p JOIN (SELECT *
 					 FROM ProjectContract
@@ -211,7 +211,7 @@ FROM Project p JOIN (SELECT *
 GROUP BY ROLLUP(c.[Name])
 
 /* 6 */
---GETDATE() или указать дату
+--GETDATE() РёР»Рё СѓРєР°Р·Р°С‚СЊ РґР°С‚Сѓ
 DECLARE @a date = /*GETDATE()*/'20210613'
 SELECT p.[Name] Project, e.[Name] Equipment, d.[Name] Department, pe.StartDate, pe.EndDate
 FROM ProjectEquipment pe JOIN Project p ON p.ID = pe.ProjectID
@@ -221,38 +221,38 @@ WHERE pe.StartDate <= @a AND pe.EndDate >= @a
 GO
 
 /* 7 */
---проекты
+--РїСЂРѕРµРєС‚С‹
 SELECT e.[Name] Equipment, d.[Name] Department, pe.StartDate, pe.EndDate
 FROM ProjectEquipment pe JOIN Project p ON p.ID = pe.ProjectID
 						 JOIN Equipment e ON e.ID = pe.EquipmentID
 						 JOIN Department d ON d.ID = pe.DeptID
-WHERE p.[Name] = 'проект1'
---договоры
+WHERE p.[Name] = 'РїСЂРѕРµРєС‚1'
+--РґРѕРіРѕРІРѕСЂС‹
 SELECT p.[Name] Project, e.[Name] Equipment, d.[Name] Department, pe.StartDate, pe.EndDate
 FROM ProjectEquipment pe JOIN Project p ON p.ID = pe.ProjectID
 						 JOIN Equipment e ON e.ID = pe.EquipmentID
 						 JOIN Department d ON d.ID = pe.DeptID
 WHERE ProjectID IN (SELECT ProjectID
 					FROM ProjectContract pc JOIN [Contract] c ON c.ID = pc.ContractID
-					WHERE [Name] = 'контракт1')
+					WHERE [Name] = 'РєРѕРЅС‚СЂР°РєС‚1')
 
 /* 8 */
---сотрудник в проекте
+--СЃРѕС‚СЂСѓРґРЅРёРє РІ РїСЂРѕРµРєС‚Рµ
 DECLARE @a date = '20200101'
 DECLARE @b date = '20201231'
 SELECT [Name] Project, StartDate, EndDate
 FROM Project p JOIN ProjectEmployee pe ON p.ID = pe.ProjectID
 			   JOIN Employee e ON e.ID = pe.EmployeeID
-WHERE FIO = 'иванов иван иванович' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
+WHERE FIO = 'РёРІР°РЅРѕРІ РёРІР°РЅ РёРІР°РЅРѕРІРёС‡' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
 GO
---категория сотрудников в договоре
+--РєР°С‚РµРіРѕСЂРёСЏ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ РІ РґРѕРіРѕРІРѕСЂРµ
 DECLARE @a date = '20200101'
 DECLARE @b date = '20201231'
 SELECT FIO, [Name] [Contract], StartDate, EndDate
 FROM [Contract] c JOIN ProjectContract pc ON c.ID = pc.ContractID
 				  JOIN ProjectEmployee pe ON pc.ProjectID = pe.ProjectID
 				  JOIN Employee e ON e.ID = pe.EmployeeID
-WHERE [Type] = 'конструктор' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
+WHERE [Type] = 'РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
 GO
 
 /* 9 */
@@ -261,32 +261,32 @@ FROM Project p JOIN ProjectOutsource po ON p.ID = po.ProjectID
 			   JOIN Outsource o ON o.ID = po.OutsourceID
 
 /* 10 */
---в целом
+--РІ С†РµР»РѕРј
 SELECT FIO, [Type]
 FROM Employee e JOIN ProjectEmployee pe ON e.ID = pe.EmployeeID
 				JOIN Project p ON p.ID = pe.ProjectID
-WHERE [Name] = 'проект2'
---категория
+WHERE [Name] = 'РїСЂРѕРµРєС‚2'
+--РєР°С‚РµРіРѕСЂРёСЏ
 SELECT FIO
 FROM Employee e JOIN ProjectEmployee pe ON e.ID = pe.EmployeeID
 				JOIN Project p ON p.ID = pe.ProjectID
-WHERE [Name] = 'проект2' AND [Type] = 'лаборант'
+WHERE [Name] = 'РїСЂРѕРµРєС‚2' AND [Type] = 'Р»Р°Р±РѕСЂР°РЅС‚'
 
 /* 11 */
 SELECT p.[Name] Project
 FROM Project p JOIN ProjectEquipment pe ON p.ID = pe.ProjectID
 			   JOIN Equipment e ON e.ID = pe.EquipmentID
-WHERE e.[Name] = 'прокатный станок'
+WHERE e.[Name] = 'РїСЂРѕРєР°С‚РЅС‹Р№ СЃС‚Р°РЅРѕРє'
 
 /* 12 */
---время
+--РІСЂРµРјСЏ
 SELECT c.[Name] [Contract], Cost, [Days], Cost/[Days] [Income per day]
 FROM [Contract] c JOIN (SELECT ContractID, SUM(Cost) Cost
 						FROM ProjectContract pc JOIN Project p ON p.ID = pc.ProjectID
 						GROUP BY ContractID) s1 ON c.ID = s1.ContractID
 				  JOIN (SELECT ID, DATEDIFF(day, StartDate, EndDate) [Days]
 						FROM [Contract] c) s2 ON c.ID = s2.ID
---люди
+--Р»СЋРґРё
 SELECT c.[Name] [Contract], Cost, Employees, Cost/Employees [Income per employee]
 FROM [Contract] c JOIN (SELECT ContractID, SUM(Cost) Cost
 						FROM ProjectContract pc JOIN Project p ON p.ID = pc.ProjectID
@@ -296,7 +296,7 @@ FROM [Contract] c JOIN (SELECT ContractID, SUM(Cost) Cost
 						GROUP BY ContractID) s2 ON c.ID = s2.ContractID
 
 /* 13 */
---в целом
+--РІ С†РµР»РѕРј
 DECLARE @a date = '20200101'
 DECLARE @b date = '20201231'
 SELECT p.[Name] Project, FIO, [Type]
@@ -304,21 +304,21 @@ FROM Employee e JOIN ProjectEmployee pe ON e.ID = pe.EmployeeID
 				JOIN Project p ON p.ID = pe.ProjectID
 WHERE StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b
 GO
---категория
+--РєР°С‚РµРіРѕСЂРёСЏ
 DECLARE @a date = '20200101'
 DECLARE @b date = '20201231'
 SELECT p.[Name] Project, FIO
 FROM Employee e JOIN ProjectEmployee pe ON e.ID = pe.EmployeeID
 				JOIN Project p ON p.ID = pe.ProjectID
-WHERE [Type] = 'лаборант' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
+WHERE [Type] = 'Р»Р°Р±РѕСЂР°РЅС‚' AND (StartDate BETWEEN @a AND @b OR EndDate BETWEEN @a AND @b)
 GO
 
 /* 14 */
---время
+--РІСЂРµРјСЏ
 SELECT p.[Name] Project, Cost, [Days], Cost/[Days] [Income per day]
 FROM Project p JOIN (SELECT ID, DATEDIFF(day, StartDate, EndDate) [Days]
 					 FROM Project p) s ON p.ID = s.ID
---люди
+--Р»СЋРґРё
 SELECT p.[Name] Project, Cost, Employees, Cost/Employees [Income per employee]
 FROM Project p JOIN (SELECT ProjectID, COUNT(EmployeeID) Employees
 					 FROM ProjectEmployee pe

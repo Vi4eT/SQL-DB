@@ -23,11 +23,11 @@ CREATE TABLE [ProviderType](
 GO
 
 INSERT INTO ProviderType ([Name]) VALUES 
-	('Фирма'), 
-	('Дилер'), 
-	('Производство'),
-	('Мелкий поставщик'), 
-	('Магазин')
+	('Р¤РёСЂРјР°'), 
+	('Р”РёР»РµСЂ'), 
+	('РџСЂРѕРёР·РІРѕРґСЃС‚РІРѕ'),
+	('РњРµР»РєРёР№ РїРѕСЃС‚Р°РІС‰РёРє'), 
+	('РњР°РіР°Р·РёРЅ')
 GO
 
 CREATE TABLE [Provider](
@@ -52,7 +52,7 @@ CREATE TABLE [PriceList](
 ) 
 GO
 
---заказы поставщикам
+--Р·Р°РєР°Р·С‹ РїРѕСЃС‚Р°РІС‰РёРєР°Рј
 CREATE TABLE [Order](
 	[ID] int PRIMARY KEY IDENTITY,
 	[ProviderID] int NOT NULL REFERENCES [Provider] (ID),
@@ -67,7 +67,7 @@ CREATE TABLE [Buyer](
 ) 
 GO
 
---заявки покупателей
+--Р·Р°СЏРІРєРё РїРѕРєСѓРїР°С‚РµР»РµР№
 CREATE TABLE [Request](
 	[ID] int PRIMARY KEY IDENTITY,
 	[BuyerID] int NOT NULL REFERENCES Buyer (ID),
@@ -124,16 +124,16 @@ CREATE TABLE [Defect](
 GO
 
 
-/* ЗАПРОСЫ */
+/* Р—РђРџР РћРЎР« */
 /* 1 */
---фирмы, поставляющие двигатели
+--С„РёСЂРјС‹, РїРѕСЃС‚Р°РІР»СЏСЋС‰РёРµ РґРІРёРіР°С‚РµР»Рё
 SELECT pr.[Name]
 FROM [Provider] pr JOIN ProviderType t ON pr.TypeID = t.ID, Delivery d, Part p
-WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'фирма' AND p.[Name] = 'двигатель'
---магазины, поставившие не менее 100 шин за апрель 2021
+WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'С„РёСЂРјР°' AND p.[Name] = 'РґРІРёРіР°С‚РµР»СЊ'
+--РјР°РіР°Р·РёРЅС‹, РїРѕСЃС‚Р°РІРёРІС€РёРµ РЅРµ РјРµРЅРµРµ 100 С€РёРЅ Р·Р° Р°РїСЂРµР»СЊ 2021
 SELECT pr.[Name], SUM(Quantity) Quantity
 FROM [Provider] pr JOIN ProviderType t ON pr.TypeID = t.ID, Delivery d, Part p
-WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'магазин' AND p.[Name] = 'шина' 
+WHERE pr.ID = d.ProviderID AND d.PartID = p.ID AND t.[Name] = 'РјР°РіР°Р·РёРЅ' AND p.[Name] = 'С€РёРЅР°' 
 	  AND [Date] BETWEEN '20210401' AND '20210430'
 GROUP BY pr.[Name]
 HAVING SUM(Quantity) > 100
@@ -143,14 +143,14 @@ SELECT pr.[Name], t.[Name] [Type], Price, DeliveryIn
 FROM PriceList pl JOIN Part p ON pl.PartID = p.ID
 				  JOIN [Provider] pr ON pr.ID = pl.ProviderID
 				  JOIN ProviderType t ON pr.TypeID = t.ID
-WHERE p.[Name] = 'двигатель'
+WHERE p.[Name] = 'РґРІРёРіР°С‚РµР»СЊ'
 
 /* 3 */
---фары за неделю
+--С„Р°СЂС‹ Р·Р° РЅРµРґРµР»СЋ
 SELECT b.[Name], Quantity
 FROM Sale s, Part p, Buyer b
-WHERE s.PartID = p.ID AND s.BuyerID = b.ID AND [Date] BETWEEN '20210419' AND '20210425' AND p.[Name] = 'фара'
---товары в объёме >= 1000
+WHERE s.PartID = p.ID AND s.BuyerID = b.ID AND [Date] BETWEEN '20210419' AND '20210425' AND p.[Name] = 'С„Р°СЂР°'
+--С‚РѕРІР°СЂС‹ РІ РѕР±СЉС‘РјРµ >= 1000
 SELECT b.[Name], p.[Name] Part, Quantity
 FROM Sale s, Part p, Buyer b
 WHERE s.PartID = p.ID AND s.BuyerID = b.ID AND Quantity >= 1000
@@ -173,26 +173,26 @@ ORDER BY Quantity DESC
 /* 6 */
 SELECT AVG(Quantity) Average
 FROM Sale s, Part p
-WHERE s.PartID = p.ID AND [Date] BETWEEN '20210401' AND '20210430' AND p.[Name] = 'фара'
+WHERE s.PartID = p.ID AND [Date] BETWEEN '20210401' AND '20210430' AND p.[Name] = 'С„Р°СЂР°'
 
 /* 7 */
---доля по объёмам продаж (деньги)
+--РґРѕР»СЏ РїРѕ РѕР±СЉС‘РјР°Рј РїСЂРѕРґР°Р¶ (РґРµРЅСЊРіРё)
 DECLARE @a real = (SELECT SUM(Price * Quantity) 
 				   FROM Delivery, [Provider] pr
-				   WHERE ProviderID = pr.ID AND pr.[Name] = 'дилер')
+				   WHERE ProviderID = pr.ID AND pr.[Name] = 'РґРёР»РµСЂ')
 DECLARE @b real = (SELECT SUM(Price * Quantity)
 				   FROM Delivery)
 SELECT CONCAT(CASE WHEN @a IS NULL THEN 0 ELSE @a END/@b*100, '%') [Value market share]
 GO
---доля по штучным продажам (единицы товара)
+--РґРѕР»СЏ РїРѕ С€С‚СѓС‡РЅС‹Рј РїСЂРѕРґР°Р¶Р°Рј (РµРґРёРЅРёС†С‹ С‚РѕРІР°СЂР°)
 DECLARE @a real = (SELECT SUM(Quantity) 
 				   FROM Delivery, [Provider] pr
-				   WHERE ProviderID = pr.ID AND pr.[Name] = 'дилер')
+				   WHERE ProviderID = pr.ID AND pr.[Name] = 'РґРёР»РµСЂ')
 DECLARE @b real = (SELECT SUM(Quantity)
 				   FROM Delivery)
 SELECT CONCAT(CASE WHEN @a IS NULL THEN 0 ELSE @a END/@b*100, '%') [Volume market share]
 GO
---прибыль за месяц
+--РїСЂРёР±С‹Р»СЊ Р·Р° РјРµСЃСЏС†
 DECLARE @d1 date = '20210401'
 DECLARE @d2 date = '20210430'
 DECLARE @a real = (SELECT SUM(Price * Quantity)
@@ -237,21 +237,21 @@ WHERE s.PartID = p.ID AND [Date] = '20210401'
 GROUP BY [Name]
 
 /* 12 */
---приход и расход указаны относительно количества деталей на складе
+--РїСЂРёС…РѕРґ Рё СЂР°СЃС…РѕРґ СѓРєР°Р·Р°РЅС‹ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РєРѕР»РёС‡РµСЃС‚РІР° РґРµС‚Р°Р»РµР№ РЅР° СЃРєР»Р°РґРµ
 DECLARE @d1 date = '20210401'
 DECLARE @d2 date = '20210430'
-SELECT 'Приход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], pr.[Name] Trader
+SELECT 'РџСЂРёС…РѕРґ' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], pr.[Name] Trader
 FROM Delivery, Part p, [Provider] pr
 WHERE PartID = p.ID AND ProviderID = pr.ID AND [Date] BETWEEN @d1 AND @d2
 UNION ALL
-SELECT 'Расход' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], b.[Name]
+SELECT 'Р Р°СЃС…РѕРґ' [Type], [Date], p.[Name] Part, Price, Quantity, Price * Quantity [Value], b.[Name]
 FROM Sale, Part p, Buyer b
 WHERE PartID = p.ID AND BuyerID = b.ID AND [Date] BETWEEN @d1 AND @d2
 ORDER BY [Date]
 GO
 
 /* 13 */
---difference: + недостача, - избыток
+--difference: + РЅРµРґРѕСЃС‚Р°С‡Р°, - РёР·Р±С‹С‚РѕРє
 SELECT [Name] Part, Price, Calc Calculated, Price * Calc [Calc value], Actual, Price * Actual [Actual value], 
 	   Calc - Actual [Difference], Price * (Calc - Actual) [Diff value]
 FROM (SELECT p.[Name], CASE WHEN Price IS NULL THEN 0 ELSE Price END Price, Calc, 
@@ -277,16 +277,16 @@ FROM (SELECT p.[Name], CASE WHEN Price IS NULL THEN 0 ELSE Price END Price, Calc
 /* 14 */
 DECLARE @d1 date = '20200101'
 DECLARE @d2 date = '20201231'
-DECLARE @n varchar(50) = 'шина'
+DECLARE @n varchar(50) = 'С€РёРЅР°'
 DECLARE @a real = (SELECT SUM(Quantity * [Purchase Price])
 				   FROM ActualStorage s, Part p
-				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] < @d1) --остатки на начало периода
+				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] < @d1) --РѕСЃС‚Р°С‚РєРё РЅР° РЅР°С‡Р°Р»Рѕ РїРµСЂРёРѕРґР°
 DECLARE @b real = (SELECT SUM(Quantity * [Purchase Price])
 				   FROM ActualStorage s, Part p
-				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] < @d2) --остатки на конец периода
+				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] < @d2) --РѕСЃС‚Р°С‚РєРё РЅР° РєРѕРЅРµС† РїРµСЂРёРѕРґР°
 DECLARE @c real = (SELECT SUM(Price * Quantity)
 				   FROM Sale s, Part p
-				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] BETWEEN @d1 AND @d2) --объём продаж
+				   WHERE s.PartID = p.ID AND [Name] = @n AND [Date] BETWEEN @d1 AND @d2) --РѕР±СЉС‘Рј РїСЂРѕРґР°Р¶
 SELECT (@a+@b)/2 * DATEDIFF(day, @d1, @d2) / @c [Product turnover (days)]
 GO
 
@@ -306,10 +306,10 @@ WHERE Quantity > 0
 GO
 
 /* 16 */
---перечень
+--РїРµСЂРµС‡РµРЅСЊ
 SELECT b.[Name], p.[Name] Part, Quantity, Price, Quantity * Price [Value]
 FROM Request, Part p, Buyer b
 WHERE PartID = p.ID AND BuyerID = b.ID
---общая сумма
+--РѕР±С‰Р°СЏ СЃСѓРјРјР°
 SELECT SUM(Quantity * Price) Total
 FROM Request

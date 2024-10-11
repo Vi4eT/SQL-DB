@@ -24,14 +24,14 @@ CREATE TABLE Department
 GO
 
 INSERT INTO Department ([Name]) VALUES
-	('Приемное'), 
-	('Терапевтическое'),
-	('Рентгенологическое'),
-	('Хирургическое'),
-	('Педиатрия'),
-	('Гинекологическое'),
-	('Неврологическое'),
-	('Стоматологическое')
+	('РџСЂРёРµРјРЅРѕРµ'), 
+	('РўРµСЂР°РїРµРІС‚РёС‡РµСЃРєРѕРµ'),
+	('Р РµРЅС‚РіРµРЅРѕР»РѕРіРёС‡РµСЃРєРѕРµ'),
+	('РҐРёСЂСѓСЂРіРёС‡РµСЃРєРѕРµ'),
+	('РџРµРґРёР°С‚СЂРёСЏ'),
+	('Р“РёРЅРµРєРѕР»РѕРіРёС‡РµСЃРєРѕРµ'),
+	('РќРµРІСЂРѕР»РѕРіРёС‡РµСЃРєРѕРµ'),
+	('РЎС‚РѕРјР°С‚РѕР»РѕРіРёС‡РµСЃРєРѕРµ')
 GO
 
 CREATE TABLE Ward
@@ -49,14 +49,14 @@ CREATE TABLE Specialty
 GO
 
 INSERT INTO Specialty ([Name]) VALUES
-	('Хирург'), 
-	('Терапевт'),
-	('Невропатолог'),
-	('Окулист'),
-	('Стоматолог'),
-	('Рентгенолог'),
-	('Педиатр'),
-	('Гинеколог')
+	('РҐРёСЂСѓСЂРі'), 
+	('РўРµСЂР°РїРµРІС‚'),
+	('РќРµРІСЂРѕРїР°С‚РѕР»РѕРі'),
+	('РћРєСѓР»РёСЃС‚'),
+	('РЎС‚РѕРјР°С‚РѕР»РѕРі'),
+	('Р РµРЅС‚РіРµРЅРѕР»РѕРі'),
+	('РџРµРґРёР°С‚СЂ'),
+	('Р“РёРЅРµРєРѕР»РѕРі')
 GO
 
 CREATE TABLE Doctor
@@ -96,7 +96,7 @@ CREATE TABLE Patient
 	[ID] int PRIMARY KEY IDENTITY,
 	[FIO] varchar(50) NOT NULL,
 	[Passport] bigint UNIQUE NOT NULL CONSTRAINT CK_Patient_Passport CHECK (Passport >= 1000000000 AND Passport <= 9999999999),
-	[Policy] varchar(7) UNIQUE NOT NULL CONSTRAINT CK_Patient_Policy CHECK ([Policy] LIKE '[А-Я][А-Я][0-9][0-9][0-9][0-9][А-Я]'),
+	[Policy] varchar(7) UNIQUE NOT NULL CONSTRAINT CK_Patient_Policy CHECK ([Policy] LIKE '[Рђ-РЇ][Рђ-РЇ][0-9][0-9][0-9][0-9][Рђ-РЇ]'),
 	[Allergy] varchar(50) NULL
 )
 GO
@@ -109,7 +109,7 @@ BEGIN
 	WHERE PatientID = @ID
 	IF @dmin = @d
 		RETURN 0
-	IF @dend IS NULL OR @dend > @d --для каждого отдельного пациента данные вносить хронологически
+	IF @dend IS NULL OR @dend > @d --РґР»СЏ РєР°Р¶РґРѕРіРѕ РѕС‚РґРµР»СЊРЅРѕРіРѕ РїР°С†РёРµРЅС‚Р° РґР°РЅРЅС‹Рµ РІРЅРѕСЃРёС‚СЊ С…СЂРѕРЅРѕР»РѕРіРёС‡РµСЃРєРё
 		RETURN 1
 	RETURN 0
 END

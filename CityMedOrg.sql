@@ -52,14 +52,14 @@ CREATE TABLE DepartmentType
 GO
 
 INSERT INTO DepartmentType ([Name]) VALUES
-	('Ïðèåìíîå'), 
-	('Ôèçèîòåðàïåâòè÷åñêîå'),
-	('Ðåíòãåíîëîãè÷åñêîå'),
-	('Õèðóðãè÷åñêîå'),
-	('Ïàòîëîãîàíàòîìè÷åñêîå'),
-	('Ãèíåêîëîãè÷åñêîå'),
-	('Íåâðîëîãè÷åñêîå'),
-	('Ñòîìàòîëîãè÷åñêîå')
+	('ÐŸÑ€Ð¸ÐµÐ¼Ð½Ð¾Ðµ'), 
+	('Ð¤Ð¸Ð·Ð¸Ð¾Ñ‚ÐµÑ€Ð°Ð¿ÐµÐ²Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('Ð ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('Ð¥Ð¸Ñ€ÑƒÑ€Ð³Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('ÐŸÐ°Ñ‚Ð¾Ð»Ð¾Ð³Ð¾Ð°Ð½Ð°Ñ‚Ð¾Ð¼Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('Ð“Ð¸Ð½ÐµÐºÐ¾Ð»Ð¾Ð³Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('ÐÐµÐ²Ñ€Ð¾Ð»Ð¾Ð³Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ'),
+	('Ð¡Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ')
 GO
 
 CREATE TABLE Department
@@ -102,16 +102,16 @@ CREATE TABLE Specialty
 GO
 
 INSERT INTO Specialty ([Name], IsDoctor) VALUES
-	('Õèðóðã', 1), 
-	('Òåðàïåâò', 1),
-	('Íåâðîïàòîëîã', 1),
-	('Îêóëèñò', 1),
-	('Ñòîìàòîëîã', 1),
-	('Ðåíòãåíîëîã', 1),
-	('Ãèíåêîëîã', 1),
-	('Ìåäñåñòðà', 0),
-	('Ñàíèòàð', 0),
-	('Óáîðùèöà', 0)
+	('Ð¥Ð¸Ñ€ÑƒÑ€Ð³', 1), 
+	('Ð¢ÐµÑ€Ð°Ð¿ÐµÐ²Ñ‚', 1),
+	('ÐÐµÐ²Ñ€Ð¾Ð¿Ð°Ñ‚Ð¾Ð»Ð¾Ð³', 1),
+	('ÐžÐºÑƒÐ»Ð¸ÑÑ‚', 1),
+	('Ð¡Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³', 1),
+	('Ð ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³', 1),
+	('Ð“Ð¸Ð½ÐµÐºÐ¾Ð»Ð¾Ð³', 1),
+	('ÐœÐµÐ´ÑÐµÑÑ‚Ñ€Ð°', 0),
+	('Ð¡Ð°Ð½Ð¸Ñ‚Ð°Ñ€', 0),
+	('Ð£Ð±Ð¾Ñ€Ñ‰Ð¸Ñ†Ð°', 0)
 GO
 
 CREATE FUNCTION isdoctor(@ID int) RETURNS bit AS
@@ -142,7 +142,7 @@ BEGIN
 END
 GO
 
---TODO: êîýô ê çï: ðåíòãåíîëîã, ñòîìàòîëîã; îòïóñê: ðåíòãåíîëîã, íåâðîïàòîëîã?
+--TODO: ÐºÐ¾ÑÑ„ Ðº Ð·Ð¿: Ñ€ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³, ÑÑ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³; Ð¾Ñ‚Ð¿ÑƒÑÐº: Ñ€ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³, Ð½ÐµÐ²Ñ€Ð¾Ð¿Ð°Ñ‚Ð¾Ð»Ð¾Ð³?
 CREATE TABLE Employee
 (
 	[ID] int PRIMARY KEY IDENTITY,
@@ -190,13 +190,13 @@ CREATE TABLE LabType
 GO
 
 INSERT INTO LabType ([Name]) VALUES
-	('Áèîõèì'), 
-	('Ôèçèî'),
-	('Õèì'),
-	('Áèîõèì + Ôèçèî'),
-	('Áèîõèì + Õèì'),
-	('Ôèçèî + Õèì'),
-	('Áèîõèì + Ôèçèî + Õèì')
+	('Ð‘Ð¸Ð¾Ñ…Ð¸Ð¼'), 
+	('Ð¤Ð¸Ð·Ð¸Ð¾'),
+	('Ð¥Ð¸Ð¼'),
+	('Ð‘Ð¸Ð¾Ñ…Ð¸Ð¼ + Ð¤Ð¸Ð·Ð¸Ð¾'),
+	('Ð‘Ð¸Ð¾Ñ…Ð¸Ð¼ + Ð¥Ð¸Ð¼'),
+	('Ð¤Ð¸Ð·Ð¸Ð¾ + Ð¥Ð¸Ð¼'),
+	('Ð‘Ð¸Ð¾Ñ…Ð¸Ð¼ + Ð¤Ð¸Ð·Ð¸Ð¾ + Ð¥Ð¸Ð¼')
 GO
 
 CREATE TABLE Lab
@@ -250,7 +250,7 @@ CREATE TABLE Patient
 )
 GO
 
---TODO: îãðàíè÷åíèå ïî ìåñòó ðàáîòû? ïî òåêóùåé äàòå
+--TODO: Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ðµ Ð¿Ð¾ Ð¼ÐµÑÑ‚Ñƒ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹? Ð¿Ð¾ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¹ Ð´Ð°Ñ‚Ðµ
 CREATE TABLE PolyclinicCard
 (
 	[ID] int PRIMARY KEY IDENTITY,
@@ -262,7 +262,7 @@ CREATE TABLE PolyclinicCard
 )
 GO
 
---isinhospital è isfreebed íå ðàáîòàþò íà íîâûõ çàïèñÿõ áåç EndDate, íå þçàòü â òàáëèöå
+--isinhospital Ð¸ isfreebed Ð½Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ð°ÑŽÑ‚ Ð½Ð° Ð½Ð¾Ð²Ñ‹Ñ… Ð·Ð°Ð¿Ð¸ÑÑÑ… Ð±ÐµÐ· EndDate, Ð½Ðµ ÑŽÐ·Ð°Ñ‚ÑŒ Ð² Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ðµ
 /*CREATE FUNCTION isinhospital(@ID int) RETURNS bit AS
 BEGIN
 	DECLARE @d1 date = (SELECT MAX(StartDate)
@@ -294,7 +294,7 @@ BEGIN
 END
 GO
 
---TODO: îãðàíè÷åíèå ïî ìåñòó ðàáîòû? ïî òåêóùåé äàòå, ïî òåìïåðàòóðå, òèïû ñòàòóñîâ?
+--TODO: Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ðµ Ð¿Ð¾ Ð¼ÐµÑÑ‚Ñƒ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹? Ð¿Ð¾ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¹ Ð´Ð°Ñ‚Ðµ, Ð¿Ð¾ Ñ‚ÐµÐ¼Ð¿ÐµÑ€Ð°Ñ‚ÑƒÑ€Ðµ, Ñ‚Ð¸Ð¿Ñ‹ ÑÑ‚Ð°Ñ‚ÑƒÑÐ¾Ð²?
 CREATE TABLE HospitalCard
 (
 	[ID] int PRIMARY KEY IDENTITY,
@@ -318,7 +318,7 @@ BEGIN
 		FROM Specialty
 		WHERE ID = (SELECT SpecialtyID
 					FROM Employee
-					WHERE @ID = ID)) IN ('Õèðóðã', 'Ñòîìàòîëîã', 'Ãèíåêîëîã')
+					WHERE @ID = ID)) IN ('Ð¥Ð¸Ñ€ÑƒÑ€Ð³', 'Ð¡Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³', 'Ð“Ð¸Ð½ÐµÐºÐ¾Ð»Ð¾Ð³')
 		RETURN 1
 	RETURN 0
 END
@@ -339,9 +339,9 @@ GO
 
 --Queries
 --1 
---áîëüíèöà
-DECLARE @s varchar(20) = 'õèðóðã', 
-		@h varchar(50) = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
+DECLARE @s varchar(20) = 'Ñ…Ð¸Ñ€ÑƒÑ€Ð³', 
+		@h varchar(50) = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
 SELECT FIO, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Hospital h ON e.HospitalID = h.ID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
@@ -353,43 +353,43 @@ FROM Employee e JOIN RankedConsult rc ON e.ID = rc.EmployeeID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
 WHERE s.[Name] = @s AND h.[Name] = @h
 GO
---âñå
+--Ð²ÑÐµ
 SELECT FIO, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'õèðóðã'
+WHERE s.[Name] = 'Ñ…Ð¸Ñ€ÑƒÑ€Ð³'
 
 --2 
---ïîëèêëèíèêà
+--Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ°
 SELECT FIO, Experience, Salary
 FROM Employee e JOIN Hospital h ON e.PolyID = h.ID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'ñàíèòàð' AND h.[Name] = 'Ïîëèêëèíèêà ¹49'
---âñå
+WHERE s.[Name] = 'ÑÐ°Ð½Ð¸Ñ‚Ð°Ñ€' AND h.[Name] = 'ÐŸÐ¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–49'
+--Ð²ÑÐµ
 SELECT FIO, Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'ñàíèòàð'
+WHERE s.[Name] = 'ÑÐ°Ð½Ð¸Ñ‚Ð°Ñ€'
 
 --3 
---áîëüíèöà
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
 SELECT FIO, COUNT(DoctorID) Operations, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
 				JOIN Operation o ON o.DoctorID = e.ID
 				JOIN Hospital h ON e.HospitalID = h.ID
-WHERE s.[Name] = 'ñòîìàòîëîã' AND h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
+WHERE s.[Name] = 'ÑÑ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³' AND h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
 GROUP BY FIO, Degree, [Rank], Experience, Salary
 HAVING COUNT(DoctorID) > 1
---âñå
+--Ð²ÑÐµ
 SELECT FIO, COUNT(DoctorID) Operations, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
 				JOIN Operation o ON o.DoctorID = e.ID
-WHERE s.[Name] = 'ñòîìàòîëîã'
+WHERE s.[Name] = 'ÑÑ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³'
 GROUP BY FIO, Degree, [Rank], Experience, Salary
 HAVING COUNT(DoctorID) > 1
 
 --4 
---áîëüíèöà
-DECLARE @s varchar(20) = 'íåâðîïàòîëîã', 
-		@h varchar(50) = 'Åëèçàâåòèíñêàÿ áîëüíèöà'
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
+DECLARE @s varchar(20) = 'Ð½ÐµÐ²Ñ€Ð¾Ð¿Ð°Ñ‚Ð¾Ð»Ð¾Ð³', 
+		@h varchar(50) = 'Ð•Ð»Ð¸Ð·Ð°Ð²ÐµÑ‚Ð¸Ð½ÑÐºÐ°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°'
 SELECT FIO, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Hospital h ON e.HospitalID = h.ID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
@@ -401,15 +401,15 @@ FROM Employee e JOIN RankedConsult rc ON e.ID = rc.EmployeeID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
 WHERE s.[Name] = @s AND h.[Name] = @h AND Experience >= 10
 GO
---âñå
+--Ð²ÑÐµ
 SELECT FIO, Degree, [Rank], Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'íåâðîïàòîëîã' AND Experience >= 10
+WHERE s.[Name] = 'Ð½ÐµÐ²Ñ€Ð¾Ð¿Ð°Ñ‚Ð¾Ð»Ð¾Ð³' AND Experience >= 10
 
 --5 
---ïîëèêëèíèêà, äîêòîð íàóê
-DECLARE @s varchar(20) = 'ðåíòãåíîëîã', 
-		@h varchar(50) = 'Ãîðîäñêàÿ ïîëèêëèíèêà ¹14',
+--Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ°, Ð´Ð¾ÐºÑ‚Ð¾Ñ€ Ð½Ð°ÑƒÐº
+DECLARE @s varchar(20) = 'Ñ€ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³', 
+		@h varchar(50) = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–14',
 		@d varchar(3) = 'MD'
 SELECT FIO, [Rank], Experience, Salary
 FROM Employee e JOIN Hospital h ON e.PolyID = h.ID
@@ -422,19 +422,19 @@ FROM Employee e JOIN RankedConsult rc ON e.ID = rc.EmployeeID
 				JOIN Specialty s ON e.SpecialtyID = s.ID
 WHERE s.[Name] = @s AND h.[Name] = @h AND Degree = @d
 GO
---âñå äîöåíòû
+--Ð²ÑÐµ Ð´Ð¾Ñ†ÐµÐ½Ñ‚Ñ‹
 SELECT FIO, Degree, Experience, Salary
 FROM Employee e JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'ðåíòãåíîëîã' AND [Rank] = 'Associate'
+WHERE s.[Name] = 'Ñ€ÐµÐ½Ñ‚Ð³ÐµÐ½Ð¾Ð»Ð¾Ð³' AND [Rank] = 'Associate'
 
 --6 
---ïàëàòà
+--Ð¿Ð°Ð»Ð°Ñ‚Ð°
 SELECT p.FIO Patient, b.ID Bed, e.FIO Doctor, StartDate, [Status], Temperature
 FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Bed b ON hc.BedID = b.ID
 					 JOIN Employee e ON hc.DoctorID = e.ID
 WHERE WardID = 6 AND EndDate IS NULL
---îòäåëåíèå
+--Ð¾Ñ‚Ð´ÐµÐ»ÐµÐ½Ð¸Ðµ
 SELECT p.FIO Patient, b.ID Bed, e.FIO Doctor, StartDate, [Status], Temperature
 FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Bed b ON hc.BedID = b.ID
@@ -442,8 +442,8 @@ FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Department d ON w.DepartmentID = d.ID
 					 JOIN DepartmentType dt ON d.TypeID = dt.ID
 					 JOIN Employee e ON hc.DoctorID = e.ID
-WHERE dt.[Name] = 'ïðè¸ìíîå' AND EndDate IS NULL
---áîëüíèöà
+WHERE dt.[Name] = 'Ð¿Ñ€Ð¸Ñ‘Ð¼Ð½Ð¾Ðµ' AND EndDate IS NULL
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
 SELECT DISTINCT p.FIO Patient, b.ID Bed, e.FIO Doctor, StartDate, [Status], Temperature
 FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Bed b ON hc.BedID = b.ID
@@ -452,15 +452,15 @@ FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Building bd ON d.BuildingID = bd.HospitalID
 					 JOIN Hospital h ON bd.HospitalID = h.ID
 					 JOIN Employee e ON hc.DoctorID = e.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2' AND EndDate IS NULL
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2' AND EndDate IS NULL
 
 --7 
---âðà÷
+--Ð²Ñ€Ð°Ñ‡
 SELECT p.FIO Patient, StartDate, EndDate
 FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Employee e ON hc.DoctorID = e.ID
-WHERE e.FIO = 'Èâàíîâ Èâàí Èâàíîâè÷' AND StartDate >= '20200101' AND EndDate <= '20210101'
---áîëüíèöà
+WHERE e.FIO = 'Ð˜Ð²Ð°Ð½Ð¾Ð² Ð˜Ð²Ð°Ð½ Ð˜Ð²Ð°Ð½Ð¾Ð²Ð¸Ñ‡' AND StartDate >= '20200101' AND EndDate <= '20210101'
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
 SELECT DISTINCT p.FIO Patient, StartDate, EndDate
 FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Bed b ON hc.BedID = b.ID
@@ -468,7 +468,7 @@ FROM HospitalCard hc JOIN Patient p ON hc.PatientID = p.ID
 					 JOIN Department d ON w.DepartmentID = d.ID
 					 JOIN Building bd ON d.BuildingID = bd.HospitalID
 					 JOIN Hospital h ON bd.HospitalID = h.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2' AND StartDate >= '20200101' AND EndDate <= '20210101'
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2' AND StartDate >= '20200101' AND EndDate <= '20210101'
 
 --8
 SELECT p.FIO Patient, e.FIO Doctor, [Date]
@@ -477,50 +477,50 @@ FROM PolyclinicCard pc JOIN Office o ON pc.OfficeID = o.ID
 					   JOIN Patient p ON pc.PatientID = p.ID
 					   JOIN Employee e ON pc.DoctorID = e.ID
 					   JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'îêóëèñò' AND h.[Name] = 'Ïîëèêëèíèêà ¹49'
+WHERE s.[Name] = 'Ð¾ÐºÑƒÐ»Ð¸ÑÑ‚' AND h.[Name] = 'ÐŸÐ¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–49'
 
 --9
---ïàëàòû áîëüíèöû
+--Ð¿Ð°Ð»Ð°Ñ‚Ñ‹ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ñ‹
 SELECT COUNT(w.ID) [Wards Count]
 FROM Ward w JOIN Department d ON w.DepartmentID = d.ID
 			JOIN Building b ON d.BuildingID = b.ID
 			JOIN Hospital h ON b.HospitalID = h.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
---ïàëàòû áîëüíèöû ïî îòäåëåíèÿì
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
+--Ð¿Ð°Ð»Ð°Ñ‚Ñ‹ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ñ‹ Ð¿Ð¾ Ð¾Ñ‚Ð´ÐµÐ»ÐµÐ½Ð¸ÑÐ¼
 SELECT dt.[Name], COUNT(w.ID) [Wards Count]
 FROM Ward w JOIN Department d ON w.DepartmentID = d.ID
 			JOIN Building b ON d.BuildingID = b.ID
 			JOIN Hospital h ON b.HospitalID = h.ID
 			JOIN DepartmentType dt ON d.TypeID = dt.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
 GROUP BY dt.[Name]
---ìåñòà áîëüíèöû
+--Ð¼ÐµÑÑ‚Ð° Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ñ‹
 SELECT COUNT(Bed.ID) [Beds Count]
 FROM Bed JOIN Ward w ON Bed.WardID = w.ID
 		 JOIN Department d ON w.DepartmentID = d.ID
 		 JOIN Building b ON d.BuildingID = b.ID
 		 JOIN Hospital h ON b.HospitalID = h.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
---ìåñòà áîëüíèöû ïî îòäåëåíèÿì
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
+--Ð¼ÐµÑÑ‚Ð° Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ñ‹ Ð¿Ð¾ Ð¾Ñ‚Ð´ÐµÐ»ÐµÐ½Ð¸ÑÐ¼
 SELECT dt.[Name], COUNT(Bed.ID) [Beds Count]
 FROM Bed JOIN Ward w ON Bed.WardID = w.ID
 		 JOIN Department d ON w.DepartmentID = d.ID
 		 JOIN Building b ON d.BuildingID = b.ID
 		 JOIN Hospital h ON b.HospitalID = h.ID
 		 JOIN DepartmentType dt ON d.TypeID = dt.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
 GROUP BY dt.[Name]
---÷èñëî ñâîáîäíûõ ìåñò ïî îòäåëåíèÿì
+--Ñ‡Ð¸ÑÐ»Ð¾ ÑÐ²Ð¾Ð±Ð¾Ð´Ð½Ñ‹Ñ… Ð¼ÐµÑÑ‚ Ð¿Ð¾ Ð¾Ñ‚Ð´ÐµÐ»ÐµÐ½Ð¸ÑÐ¼
 SELECT dt.[Name], COUNT(Bed.ID) [Free Beds Count]
 FROM Bed JOIN Ward w ON Bed.WardID = w.ID
 		 JOIN Department d ON w.DepartmentID = d.ID
 		 JOIN Building b ON d.BuildingID = b.ID
 		 JOIN Hospital h ON b.HospitalID = h.ID
 		 JOIN DepartmentType dt ON d.TypeID = dt.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2' AND dbo.isfreebed(Bed.ID) = 1
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2' AND dbo.isfreebed(Bed.ID) = 1
 GROUP BY dt.[Name]
---÷èñëî ïîëíîñòüþ ñâîáîäíûõ ïàëàò
-DECLARE @h varchar(50) = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2'
+--Ñ‡Ð¸ÑÐ»Ð¾ Ð¿Ð¾Ð»Ð½Ð¾ÑÑ‚ÑŒÑŽ ÑÐ²Ð¾Ð±Ð¾Ð´Ð½Ñ‹Ñ… Ð¿Ð°Ð»Ð°Ñ‚
+DECLARE @h varchar(50) = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2'
 SELECT COUNT(s2.ID) [Free Wards]
 FROM (SELECT w.ID, COUNT(Bed.ID) [Free Beds Count]
 	  FROM Bed JOIN Ward w ON Bed.WardID = w.ID
@@ -542,84 +542,84 @@ WHERE [Beds Count] - [Free Beds Count] = 0
 GO
 
 --10
---÷èñëî êàáèíåòîâ
+--Ñ‡Ð¸ÑÐ»Ð¾ ÐºÐ°Ð±Ð¸Ð½ÐµÑ‚Ð¾Ð²
 SELECT COUNT(o.ID) [Office Count]
 FROM Office o JOIN Hospital h ON o.PolyID = h.ID
-WHERE h.[Name] = 'Ïîëèêëèíèêà ¹49'
---÷èñëî ïîñåùåíèé
+WHERE h.[Name] = 'ÐŸÐ¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–49'
+--Ñ‡Ð¸ÑÐ»Ð¾ Ð¿Ð¾ÑÐµÑ‰ÐµÐ½Ð¸Ð¹
 SELECT o.[Name] Office, COUNT(OfficeID) [Visit Count]
 FROM Office o JOIN Hospital h ON o.PolyID = h.ID
 			  JOIN PolyclinicCard pc ON pc.OfficeID = o.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ïîëèêëèíèêà ¹14' AND [Date] BETWEEN '20200101' AND '20210101'
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–14' AND [Date] BETWEEN '20200101' AND '20210101'
 GROUP BY o.[Name]
 
 --11 
---âðà÷
+--Ð²Ñ€Ð°Ñ‡
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(DoctorID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Patient Number]
 FROM PolyclinicCard pc JOIN Employee e ON pc.DoctorID = e.ID
-WHERE e.FIO = 'Èâàíîâ Èâàí Èâàíîâè÷' AND [Date] BETWEEN @d1 AND @d2
+WHERE e.FIO = 'Ð˜Ð²Ð°Ð½Ð¾Ð² Ð˜Ð²Ð°Ð½ Ð˜Ð²Ð°Ð½Ð¾Ð²Ð¸Ñ‡' AND [Date] BETWEEN @d1 AND @d2
 GO
---ïîëèêëèíèêà
+--Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ°
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(DoctorID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Patient Number]
 FROM PolyclinicCard pc JOIN Employee e ON pc.DoctorID = e.ID
 					   JOIN Hospital h ON e.PolyID = h.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ïîëèêëèíèêà ¹14' AND [Date] BETWEEN @d1 AND @d2
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–14' AND [Date] BETWEEN @d1 AND @d2
 GO
---ñïåöèàëüíîñòü
+--ÑÐ¿ÐµÑ†Ð¸Ð°Ð»ÑŒÐ½Ð¾ÑÑ‚ÑŒ
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(DoctorID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Patient Number]
 FROM PolyclinicCard pc JOIN Employee e ON pc.DoctorID = e.ID
 					   JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'õèðóðã' AND [Date] BETWEEN @d1 AND @d2
+WHERE s.[Name] = 'Ñ…Ð¸Ñ€ÑƒÑ€Ð³' AND [Date] BETWEEN @d1 AND @d2
 GO
 
 --12
---âðà÷
+--Ð²Ñ€Ð°Ñ‡
 SELECT COUNT(DoctorID) [Current Patient Number]
 FROM HospitalCard hc JOIN Employee e ON hc.DoctorID = e.ID
-WHERE e.FIO = 'Áîãîìîëîâà Ìèðîñëàâà Ìàòâååâíà' AND EndDate IS NULL
---áîëüíèöà
+WHERE e.FIO = 'Ð‘Ð¾Ð³Ð¾Ð¼Ð¾Ð»Ð¾Ð²Ð° ÐœÐ¸Ñ€Ð¾ÑÐ»Ð°Ð²Ð° ÐœÐ°Ñ‚Ð²ÐµÐµÐ²Ð½Ð°' AND EndDate IS NULL
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°
 SELECT FIO, COUNT(DoctorID) [Current Patient Number]
 FROM HospitalCard hc JOIN Employee e ON hc.DoctorID = e.ID
 					 JOIN Hospital h ON e.HospitalID = h.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ìíîãîïðîôèëüíàÿ áîëüíèöà ¹2' AND EndDate IS NULL
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¼Ð½Ð¾Ð³Ð¾Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÑŒÐ½Ð°Ñ Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð° â„–2' AND EndDate IS NULL
 GROUP BY FIO
---ñïåöèàëüíîñòü
+--ÑÐ¿ÐµÑ†Ð¸Ð°Ð»ÑŒÐ½Ð¾ÑÑ‚ÑŒ
 SELECT FIO, COUNT(DoctorID) [Current Patient Number]
 FROM HospitalCard hc JOIN Employee e ON hc.DoctorID = e.ID
 					 JOIN Specialty s ON e.SpecialtyID = s.ID
-WHERE s.[Name] = 'ñòîìàòîëîã' AND EndDate IS NULL
+WHERE s.[Name] = 'ÑÑ‚Ð¾Ð¼Ð°Ñ‚Ð¾Ð»Ð¾Ð³' AND EndDate IS NULL
 GROUP BY FIO
 
 --13 
---áîëüíèöà, ïîëèêëèíèêà
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°, Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ°
 SELECT p.FIO Patient, e.FIO Doctor, [Date]
 FROM Operation o JOIN Hospital h ON o.HospitalID = h.ID
 				 JOIN Patient p ON o.PatientID = p.ID
 				 JOIN Employee e ON o.DoctorID = e.ID
-WHERE h.[Name] = 'Ãîðîäñêàÿ ïîëèêëèíèêà ¹14' AND [Date] BETWEEN '20200101' AND '20210101'
---äîêòîð
+WHERE h.[Name] = 'Ð“Ð¾Ñ€Ð¾Ð´ÑÐºÐ°Ñ Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–14' AND [Date] BETWEEN '20200101' AND '20210101'
+--Ð´Ð¾ÐºÑ‚Ð¾Ñ€
 SELECT p.FIO Patient, [Date]
 FROM Operation o JOIN Patient p ON o.PatientID = p.ID
 				 JOIN Employee e ON o.DoctorID = e.ID
-WHERE e.FIO = 'Áîãäàíîâ Èâàí Ìàêñèìîâè÷' AND [Date] BETWEEN '20200101' AND '20210101'
+WHERE e.FIO = 'Ð‘Ð¾Ð³Ð´Ð°Ð½Ð¾Ð² Ð˜Ð²Ð°Ð½ ÐœÐ°ÐºÑÐ¸Ð¼Ð¾Ð²Ð¸Ñ‡' AND [Date] BETWEEN '20200101' AND '20210101'
 
 --14 
---ëàáà
+--Ð»Ð°Ð±Ð°
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(LabID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Research Number]
 FROM Research r JOIN Lab l ON r.LabID = l.ID
-WHERE l.[Name] = 'ÌåäËàá' AND [Date] BETWEEN @d1 AND @d2
+WHERE l.[Name] = 'ÐœÐµÐ´Ð›Ð°Ð±' AND [Date] BETWEEN @d1 AND @d2
 GO
---áîëüíèöà, ïîëèêëèíèêà
+--Ð±Ð¾Ð»ÑŒÐ½Ð¸Ñ†Ð°, Ð¿Ð¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ°
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(LabID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Research Number]
 FROM Research r JOIN Hospital h ON r.HospitalID = h.ID
-WHERE h.[Name] = 'Ïîëèêëèíèêà ¹49' AND [Date] BETWEEN @d1 AND @d2
+WHERE h.[Name] = 'ÐŸÐ¾Ð»Ð¸ÐºÐ»Ð¸Ð½Ð¸ÐºÐ° â„–49' AND [Date] BETWEEN @d1 AND @d2
 GO
---âñå
+--Ð²ÑÐµ
 DECLARE @d1 date = '20200101', @d2 date = '20210101'
 SELECT COUNT(LabID) / CAST(DATEDIFF(day, @d1, @d2) AS real) [Average Research Number]
 FROM Research
